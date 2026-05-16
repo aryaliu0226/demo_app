@@ -1,3 +1,8 @@
+---
+name: nextjs-agent
+description: Use before editing this Next.js 16 project to enforce current App Router and Proxy conventions.
+---
+
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 
