@@ -1,7 +1,10 @@
-const config = {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
+/** @format */
 
-export default config;
+const config = {
+  schema: './prisma',
+  plugins: {
+    '@tailwindcss/postcss': {},
+  },
+}
+
+export default config
