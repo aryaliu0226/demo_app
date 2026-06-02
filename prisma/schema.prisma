@@ -13,36 +13,62 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid()) //
-  nickname String  @unique
+  id       String  @id @default(uuid())
+  password String  @default("")
+  account  String  @unique
+  nickname String? @unique
   name     String?
   age      Int?    @default(0)
-  phone    String  @unique
-  account  String  @unique
-  password String? @default("")
+  phone    String? @unique
   avatar   String?
-  email    String  @unique
+  email    String? @unique
+  brief    String? @default("")
+  address  String? @default("")
 
-  posts    Post[]
-  pets     Pet[]
+  // 总收到点赞数（冗余计数，写入时同步维护）
+  stars          Int    @default(0)
+  // 粉丝数（冗余计数，写入时同步维护）
+  followerCount  Int    @default(0)
+  // 关注数（冗余计数，写入时同步维护）
+  followingCount Int    @default(0)
+  // 粉丝列表：关注了"我"的人
+  follows        User[] @relation("UserFollows")
+  // 关注列表：我关注的人
+  following      User[] @relation("UserFollows")
+
+  posts Post[]
+  pets  Pet[]
+
+  // 该用户发出的所有评论
   comments Comment[]
+  // 该用户发出的所有点赞
+  likes    Like[]
 }
 
 model Post {
-  id          String    @id @default(uuid())
-  title       String
-  content     String?
-  published   Boolean   @default(false)
-  authorId    String
-  author      User      @relation(fields: [authorId], references: [id])
-  pictures    String[]
-  video       String?
-  stars       Int       @default(0)
-  likes       Int       @default(0)
-  comments    Int       @default(0)
+  id        String   @id @default(uuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  pictures  String[]
+  video     String?
+
+  // 收藏数
+  stars     Int @default(0)
+  // 点赞数（冗余计数，写入时同步维护）
+  likeCount Int @default(0)
+  // 评论数（冗余计数，写入时同步维护）
+  comments  Int @default(0)
+
+  // 评论列表
   commentList Comment[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  // 点赞列表
+  likes       Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Comment {
@@ -50,9 +76,21 @@ model Comment {
   content   String
   postId    String
   post      Post     @relation(fields: [postId], references: [id])
-  authorId  String // 新增
-  author    User     @relation(fields: [authorId], references: [id]) // 新增
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+
+  // 同一用户对同一帖子只能点赞一次
+  @@unique([userId, postId])
 }
 
 model Pet {

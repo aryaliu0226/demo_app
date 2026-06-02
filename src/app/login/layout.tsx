@@ -1,6 +1,6 @@
 /** @format */
 
-import TopLogo from '@/ui/header/TopLogo'
+import TopLogo from '@/ui/TopLogo'
 import Image from 'next/image'
 import bgImage from '@/assets/bg.jpeg'
 import AppLogo from '@/ui/AppLogo'
@@ -11,7 +11,7 @@ export default function AuthLayout({
   children: React.ReactNode
 }>) {
   return (
-    <main className='flex min-h-full overflow-hidden items-center justify-center bg-[#FBF7F0] '>
+    <main className='flex width-full min-h-full overflow-hidden items-center justify-center bg-[#FBF7F0] '>
       <section className='relative flex min-h-full justify-center items-center min-h-[60dvh] flex-col  md:min-h-dvh md:basis-[60%] md:px-10 bg-gradient-to-br from-amber-50 via-[#FBF7F0] to-orange-100/60'>
         <div className='pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-amber-200/40 blur-1xl' />
         <AppLogo></AppLogo>

@@ -1,0 +1,69 @@
+/** @format */
+
+@import 'tailwindcss';
+
+/*---break--- */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-hover: var(--hover);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+/*---break--- */
+:root {
+  /* ── 修改这里即可切换主题 ─────────────────── */
+  --background: #20202b;
+  --foreground: #ffffff;
+  --hover: rgba(242, 242, 242, 0.1);
+  /* ─────────────────────────────────────────── */
+  --card: #2a2a36;
+  --card-foreground: #f0f0f0;
+  --primary: #f0f0f0;
+  --primary-foreground: #20202b;
+  --secondary: rgba(242, 242, 242, 0.08);
+  --secondary-foreground: #f0f0f0;
+  --muted: rgba(242, 242, 242, 0.06);
+  --muted-foreground: #888;
+  --accent: rgba(242, 242, 242, 0.1);
+  --accent-foreground: #f0f0f0;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(242, 242, 242, 0.1);
+  --ring: rgba(255, 255, 255, 0.25);
+  --radius: 0.625rem;
+}
+
+/*---break--- */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

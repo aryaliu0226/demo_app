@@ -1,6 +1,6 @@
 /** @format */
 
-import type { Post } from '@/lib/post'
+import type { Post } from '@/lib/dal/post'
 import { HeartIcon } from '@heroicons/react/16/solid'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -25,7 +25,11 @@ function getCoverColor(post: Post) {
 
 export default function PostCard({ post }: { post: Post }) {
   const authorName =
-    post.author.name || post.author.nickname || post.author.email
+    post.author.name ||
+    post.author.nickname ||
+    post.author.account ||
+    post.author.email ||
+    '用户'
   const authorAvatar = post.author.avatar
 
   return (
@@ -34,8 +38,8 @@ export default function PostCard({ post }: { post: Post }) {
       className='block focus:outline-none focus-visible:ring-4 focus-visible:ring-zinc-300'>
       <article
         key={post.id}
-        className='overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md'>
-        <div className='aspect-[16/9] bg-zinc-200'>
+        className='overflow-hidden rounded-lg border border-zinc-800 bg-dark-bg text-white shadow-sm transition hover:-translate-y-0.5 hover:border-zinc-600 hover:shadow-md'>
+        <div className='aspect-[16/9] bg-dark-bg'>
           {post.pictures.length ? (
             <img
               src={post.pictures[0]}
@@ -58,13 +62,13 @@ export default function PostCard({ post }: { post: Post }) {
           <span>{post.creatorName}</span>
           <span>{post.createTime.slice(0, 10)}</span>
         </div> */}
-          <h3 className='mt-3 line-clamp-2 text-lg font-semibold leading-6'>
+          <h3 className='mt-3 line-clamp-2 overflow-hidden text-ellipsis text-lg font-semibold leading-6 text-white'>
             {post.title}
           </h3>
           {/* <p className='mt-3 line-clamp-3 text-sm leading-6 text-zinc-600'>
           {post.description}
         </p> */}
-          <div className='mt-5 flex items-center justify-between gap-4 text-sm text-zinc-500'>
+          <div className='mt-5 flex items-center justify-between gap-4 text-sm text-zinc-400'>
             <div className='flex min-w-0 items-center gap-2'>
               {authorAvatar ? (
                 <Image

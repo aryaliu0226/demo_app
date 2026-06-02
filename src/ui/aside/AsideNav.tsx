@@ -1,0 +1,81 @@
+/** @format */
+'use client'
+
+import Link from 'next/link'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { useProfile } from '@/ui/profile/ProfilePrivider'
+
+const navLinks = [{ href: '/posts', label: '宠友圈' }]
+
+export default function AsideNav() {
+  const pathname = usePathname()
+  const profile = useProfile()
+
+  const displayName = profile
+    ? (profile.nickname ?? profile.name ?? profile.account)
+    : null
+
+  return (
+    <aside className='flex h-full w-56 shrink-0 flex-col px-4 py-6'>
+      {/* Logo */}
+      <Link
+        href='/posts'
+        className='mb-8 flex items-center gap-2 px-2'>
+        <span className='flex h-8 w-8 items-center justify-center rounded-xl bg-foreground text-background text-base'>
+          🐾
+        </span>
+        <span className='text-4xl font-bold tracking-tight'>CongYo</span>
+      </Link>
+
+      {/* 导航链接 */}
+      <nav className='flex flex-1 flex-col gap-1'>
+        {navLinks.map(link => {
+          const isActive =
+            pathname === link.href || pathname.startsWith(`${link.href}/`)
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isActive ? 'page' : undefined}
+              className={[
+                'flex h-10 items-center rounded-lg px-3  font-medium transition-colors',
+                isActive
+                  ? 'bg-hover'
+                  : 'text-muted-foreground hover:bg-hover hover:text-foreground',
+              ].join(' ')}>
+              {link.label}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {/* 底部用户信息 */}
+      {profile && displayName && (
+        <Link
+          href='/profile'
+          className='flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-hover'>
+          {profile.avatar ? (
+            <Image
+              src={profile.avatar}
+              alt={displayName}
+              width={32}
+              height={32}
+              className='h-8 w-8 shrink-0 rounded-full object-cover'
+            />
+          ) : (
+            <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-hover text-sm font-semibold'>
+              {displayName.charAt(0).toUpperCase()}
+            </span>
+          )}
+          <div className='min-w-0'>
+            <p className='truncate text-sm font-medium'>{displayName}</p>
+            <p className='truncate text-xs text-muted-foreground'>
+              @{profile.account}
+            </p>
+          </div>
+        </Link>
+      )}
+    </aside>
+  )
+}

@@ -6,7 +6,6 @@ import Image from 'next/image'
 import Header from '@/ui/NavHeader'
 import PostIcon from '@/ui/post/PostIcon'
 
-// 格式化时间
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
@@ -17,14 +16,13 @@ function formatDate(date: Date) {
   }).format(new Date(date))
 }
 
-export default async function PostDetail({
+export default async function ProfilePostDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
   const post = await getPostByIdApi(id)
-  console.log('Fetched post detail:', post) // 调试输出
 
   if (!post) notFound()
 
@@ -35,6 +33,7 @@ export default async function PostDetail({
     video,
     stars,
     likeCount,
+    published,
     createdAt,
     updatedAt,
     author,
@@ -44,17 +43,17 @@ export default async function PostDetail({
   const authorName = author.name ?? author.nickname ?? author.account
 
   return (
-    <>
+    <main className='min-h-screen bg-zinc-50 text-zinc-900'>
       <Header
         title={title}
-        url='/posts'
+        url='/profile/posts'
       />
 
       <div className='mx-auto max-w-3xl px-6 pb-20 pt-24'>
         {/* 标题区 */}
         <section className='mb-8'>
-          {/* 发布状态 */}
-          {!post.published && (
+          {/* 草稿标记 */}
+          {!published && (
             <span className='mb-3 inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700'>
               <span className='h-1.5 w-1.5 rounded-full bg-amber-500' />
               草稿
@@ -112,7 +111,13 @@ export default async function PostDetail({
         {/* 图片列表 */}
         {pictures && pictures.length > 0 && (
           <div
-            className={`mb-8 grid gap-2 ${pictures.length === 1 ? 'grid-cols-1' : pictures.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+            className={`mb-8 grid gap-2 ${
+              pictures.length === 1
+                ? 'grid-cols-1'
+                : pictures.length === 2
+                  ? 'grid-cols-2'
+                  : 'grid-cols-3'
+            }`}>
             {pictures.map((url, index) => (
               <div
                 key={index}
@@ -128,14 +133,12 @@ export default async function PostDetail({
           </div>
         )}
 
-        {/* 正文内容 */}
+        {/* 正文 */}
         <section className='mb-12 leading-relaxed text-zinc-700'>
           {content ? (
-            <div className='whitespace-pre-wrap text-[15px] leading-7'>
-              {content}
-            </div>
+            <div className='whitespace-pre-wrap text-[15px] leading-7'>{content}</div>
           ) : (
-            <p className='text-zinc-400 italic'>暂无内容</p>
+            <p className='italic text-zinc-400'>暂无内容</p>
           )}
         </section>
 
@@ -159,9 +162,7 @@ export default async function PostDetail({
 
           {commentList.length === 0 ? (
             <div className='rounded-xl border border-dashed border-zinc-200 py-12 text-center'>
-              <p className='text-sm text-zinc-400'>
-                暂无评论，快来发表第一条评论吧
-              </p>
+              <p className='text-sm text-zinc-400'>暂无评论</p>
             </div>
           ) : (
             <ul className='space-y-4'>
@@ -174,7 +175,7 @@ export default async function PostDetail({
                       {index + 1}
                     </div>
                     <span className='text-xs text-zinc-400'>
-                      {comment.author.name ?? comment.author.nickname}
+                      {comment.author.name ?? comment.author.nickname ?? comment.author.account}
                     </span>
                   </div>
                   <p className='text-sm leading-relaxed text-zinc-700'>
@@ -186,6 +187,6 @@ export default async function PostDetail({
           )}
         </section>
       </div>
-    </>
+    </main>
   )
 }

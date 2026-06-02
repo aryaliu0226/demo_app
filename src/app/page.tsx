@@ -31,7 +31,7 @@ export default async function Home() {
             进入宠友圈
           </Link>
           <Link
-            href='/signin'
+            href='/login'
             className='rounded-md border border-white/50 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10'>
             加入社区
           </Link>

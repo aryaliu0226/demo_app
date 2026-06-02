@@ -1,61 +1,68 @@
 /** @format */
 'use server'
 
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { Prisma } from '@/generated/prisma/client'
-import bcrypt from 'bcryptjs'
-import prisma from '@/lib/prisma'
+import { SignJWT, jwtVerify } from 'jose'
 
-// ✅ 显式定义状态类型，和 useActionState 的初始值 null 对齐
-type SignupState = { error: string } | null
+// ─── JWT 密钥 ─────────────────────────────────────────────────────────────────
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET
+  if (!secret) throw new Error('环境变量 JWT_SECRET 未配置')
+  return new TextEncoder().encode(secret)
+}
 
-export async function signup(
-  prevState: SignupState,
-  formData: FormData,
-): Promise<SignupState> {
-  // 1. 取数据 + 校验（formData.get 返回的是 string | null，必须兜底）
-  const account = (formData.get('account') as string)?.trim()
-  const password = formData.get('password') as string
+// ─── 写入认证 Cookie（供 login.ts 调用）──────────────────────────────────────
+export async function setAuthCookie(userId: string) {
+  const jwtSecret = getJwtSecret()
 
-  if (!account || !password) return { error: '账号和密码不能为空' }
-  if (password.length < 6) return { error: '密码至少 6 位' }
+  const token = await new SignJWT({ sub: userId })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('24h')
+    .sign(jwtSecret)
 
-  // 2. 加密
-  const hashedPassword = await bcrypt.hash(password, 10)
-
-  // 3. 直接创建，靠数据库唯一约束兜底查重（避免并发竞态）
-  let newUser
-  try {
-    newUser = await prisma.user.create({
-      data: {
-        account: account,
-        nickname: account,
-        password: hashedPassword,
-        phone: `signup-${account}`,
-        email: `${account}@congyo.local`,
-      },
-    })
-  } catch (e) {
-    if (
-      e instanceof Prisma.PrismaClientKnownRequestError &&
-      e.code === 'P2002'
-    ) {
-      return { error: '用户已存在！' }
-    }
-    throw e
-  }
-
-  // 4. 写 cookie
   const cookieStore = await cookies()
-  cookieStore.set('access_token', String(newUser.id), {
+  cookieStore.set('access_token', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // ⚠️ 开发环境是 http
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 60 * 60 * 24,
     path: '/',
   })
+}
 
-  // 5. 跳转（必须在 try/catch 之外，原因见下）
-  redirect('/posts')
+// ─── 退出登录：清除 Cookie ───────────────────────────────────────────────────
+export async function clearAuthCookie() {
+  const cookieStore = await cookies()
+  cookieStore.delete({ name: 'access_token', path: '/' })
+}
+
+// ─── 构造带 redirect 参数的登录 URL ──────────────────────────────────────────
+// proxy.ts 会在每个请求的响应头里写入 x-current-path，这里直接读取。
+export async function buildLoginRedirectUrl(): Promise<string> {
+  const headersList = await headers()
+  const pathname = headersList.get('x-current-path')
+  // 已在登录页或无路径信息时，直接跳 /login
+  if (!pathname || pathname === '/login') return '/login'
+  return `/login?redirect=${encodeURIComponent(pathname)}`
+}
+
+// ─── 验证 Cookie 中的 JWT，返回 userId（不查 DB）────────────────────────────
+// 校验失败时跳转至 /login?redirect=<当前路径>，登录成功后可自动回跳。
+export async function verifyAuth(): Promise<string> {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('access_token')?.value
+
+  if (!token) redirect(await buildLoginRedirectUrl())
+
+  try {
+    const jwtSecret = getJwtSecret()
+    const { payload } = await jwtVerify(token, jwtSecret)
+    const userId = payload.sub
+    if (!userId) redirect(await buildLoginRedirectUrl())
+    return userId
+  } catch {
+    redirect(await buildLoginRedirectUrl())
+  }
 }
