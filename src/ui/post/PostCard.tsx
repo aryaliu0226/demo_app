@@ -48,7 +48,7 @@ export default function PostCard({ post }: { post: Post }) {
             />
           ) : (
             <div
-              className={`flex h-full items-center justify-center px-6 text-center text-lg font-semibold leading-7 ${getCoverColor(
+              className={`flex h-full items-center justify-center px-6 text-center font-semibold leading-7 ${getCoverColor(
                 post,
               )}`}>
               <span className='line-clamp-3'>

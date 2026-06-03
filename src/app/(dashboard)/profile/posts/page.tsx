@@ -1,13 +1,13 @@
 /** @format */
 
-import { getMyPostsApi } from '@/lib/dal/profile'
+import { prismaGetMyPosts } from '@/lib/dal/profile'
 import PostCard from '@/ui/post/PostCard'
 import Link from 'next/link'
 import type { Post } from '@/lib/dal/post'
 import type { MyPost } from '@/lib/dal/profile'
 
 export default async function ProfilePostsPage() {
-  const { data: posts, total } = await getMyPostsApi({ pageNo: 1, pageSize: 20 })
+  const { data: posts, total } = await prismaGetMyPosts({ pageNo: 1, pageSize: 20 })
 
   return (
     <div>

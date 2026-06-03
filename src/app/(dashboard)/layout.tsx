@@ -1,6 +1,6 @@
 /** @format */
 
-import { getLoginUser } from '@/lib/dal/profile'
+import { prismaGetLoginUser } from '@/lib/dal/profile'
 import { ProfileProvider } from '@/ui/profile/ProfilePrivider'
 import AsideNav from '@/ui/aside/AsideNav'
 
@@ -9,7 +9,7 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const profile = await getLoginUser()
+  const profile = await prismaGetLoginUser()
   return (
     <ProfileProvider profile={profile}>
       <main className='w-screen h-screen flex overflow-hidden'>

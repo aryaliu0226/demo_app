@@ -4,8 +4,9 @@
 
 import { useActionState, useState, useEffect } from 'react'
 import Image from 'next/image'
+import clsx from 'clsx'
 import { useProfile } from './ProfilePrivider'
-import { updateProfile, type UpdateProfileState } from '@/lib/actions/profile'
+import { updateProfileAction, type UpdateProfileState } from '@/lib/actions/profile'
 
 // ─── Field 辅助组件 ───────────────────────────────────────────────────────────
 function Field({
@@ -27,7 +28,7 @@ function Field({
     'w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10'
 
   return (
-    <div className={fullWidth ? 'col-span-2' : ''}>
+    <div className={clsx(fullWidth && 'col-span-2')}>
       <label className='mb-1.5 block text-sm font-medium text-zinc-700'>
         {label}
       </label>
@@ -36,7 +37,7 @@ function Field({
           name={name}
           defaultValue={defaultValue}
           rows={3}
-          className={`${inputClass} resize-none`}
+          className={clsx(inputClass, 'resize-none')}
         />
       ) : (
         <input
@@ -58,7 +59,7 @@ export default function Profile() {
   const [state, formAction, pending] = useActionState<
     UpdateProfileState,
     FormData
-  >(updateProfile, null)
+  >(updateProfileAction, null)
 
   // 保存成功后自动关闭编辑面板
   useEffect(() => {

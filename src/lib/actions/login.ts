@@ -5,8 +5,9 @@ import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
-import prisma from '@/lib/prisma'
 import { setAuthCookie } from '@/lib/auth'
+import { prismaFindUserByAccount } from '@/lib/dal/user'
+import { prismaCreateUser } from '@/lib/dal/login'
 
 const loginSchema = z.object({
   account: z.string().min(1, '账号不能为空').max(32, '账号最多 32 位').trim(),
@@ -17,7 +18,7 @@ export type LoginState = {
   error?: { account?: string; password?: string }
 } | null
 
-export async function loginApi(
+export async function fetchLoginAction(
   prevState: LoginState,
   formData: FormData,
 ): Promise<LoginState> {
@@ -39,15 +40,12 @@ export async function loginApi(
 
   const { account, password } = parsed.data
 
-  const existingUser = await prisma.user.findUnique({
-    where: { account },
-    select: { id: true, password: true },
-  })
-
   const referer = (await headers()).get('referer') ?? ''
   const redirectTo = referer
     ? (new URL(referer).searchParams.get('redirect') ?? '/posts')
     : '/posts'
+
+  const existingUser = await prismaFindUserByAccount(account)
 
   if (existingUser) {
     const isValid = await bcrypt.compare(password, existingUser.password)
@@ -57,15 +55,12 @@ export async function loginApi(
   }
 
   const hashedPassword = await bcrypt.hash(password, 10)
-  const newUser = await prisma.user.create({
-    data: {
-      account,
-      nickname: account,
-      password: hashedPassword,
-      phone: `login-${account}`,
-      email: `${account}@congyo.local`,
-    },
-    select: { id: true },
+  const newUser = await prismaCreateUser({
+    account,
+    nickname: account,
+    password: hashedPassword,
+    phone: `login-${account}`,
+    email: `${account}@congyo.local`,
   })
   await setAuthCookie(newUser.id)
   redirect(redirectTo)

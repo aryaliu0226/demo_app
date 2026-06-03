@@ -62,6 +62,10 @@ model Post {
   // 评论数（冗余计数，写入时同步维护）
   comments  Int @default(0)
 
+  // 宠物分类
+  categoryId String?
+  category   PetCategory? @relation(fields: [categoryId], references: [id])
+
   // 评论列表
   commentList Comment[]
   // 点赞列表
@@ -109,4 +113,5 @@ model PetCategory {
   name  String @unique @default("")
   label String @unique
   pets  Pet[]
+  posts Post[]
 }

@@ -1,117 +1,107 @@
 /** @format */
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import type { Post } from '@/lib/dal/post'
 import { fetchPostsAction } from '@/lib/actions/post'
+import type { Post } from '@/lib/dal/post'
 import PostCard from '@/ui/post/PostCard'
 import CardSkeleton from '@/ui/post/CardSkeleton'
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 40
+const GRID =
+  'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
 
 export default function PostList() {
   const searchParams = useSearchParams()
   const keywords = searchParams.get('keywords') ?? ''
+  const categoryId = searchParams.get('categoryId') ?? undefined
 
   const [posts, setPosts] = useState<Post[]>([])
-  const [total, setTotal] = useState(0)
-  const [initialLoading, setInitialLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(true)
+  const [loading, setLoading] = useState(false)
   const pageRef = useRef(0)
-  const loadingRef = useRef(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
-  const [isPending, startTransition] = useTransition()
 
-  // 搜索词变化或首次挂载时，重置并拉取第一页
+  // 筛选条件变化时重置
   useEffect(() => {
     pageRef.current = 0
     setPosts([])
-    setTotal(0)
-    setInitialLoading(true)
-    loadingRef.current = true
+    setHasMore(true)
+  }, [keywords, categoryId])
 
-    startTransition(async () => {
-      const { data, total } = await fetchPostsAction({
-        pageNo: 1,
-        pageSize: PAGE_SIZE,
-        keywords,
-      })
-      pageRef.current = 1
-      setPosts(data)
-      setTotal(total)
-      setInitialLoading(false)
-      loadingRef.current = false
+  // 加载下一页
+  const loadMore = async () => {
+    if (loading || !hasMore) return
+    setLoading(true)
+    const nextPage = pageRef.current + 1
+    const { data, total } = await fetchPostsAction({
+      pageNo: nextPage,
+      pageSize: PAGE_SIZE,
+      keywords,
+      categoryId,
     })
-  }, [keywords])
+    pageRef.current = nextPage
+    setPosts(prev => {
+      const seen = new Set(prev.map(p => p.id))
+      return [...prev, ...data.filter(p => !seen.has(p.id))]
+    })
+    setHasMore(nextPage * PAGE_SIZE < total)
+    setLoading(false)
+  }
 
-  // 滚动到底加载下一页
+  // 哨兵元素进入视口时触发加载
   useEffect(() => {
     const sentinel = sentinelRef.current
     if (!sentinel) return
-
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return
-        if (loadingRef.current) return
-        if (pageRef.current * PAGE_SIZE >= total) return
-
-        loadingRef.current = true
-        pageRef.current += 1
-
-        startTransition(async () => {
-          const { data, total: newTotal } = await fetchPostsAction({
-            pageNo: pageRef.current,
-            pageSize: PAGE_SIZE,
-            keywords,
-          })
-          setPosts(prev => {
-            const seen = new Set(prev.map(p => p.id))
-            return [...prev, ...data.filter(p => !seen.has(p.id))]
-          })
-          setTotal(newTotal)
-          loadingRef.current = false
-        })
+      ([e]) => {
+        if (e.isIntersecting) loadMore()
       },
       { threshold: 0.1 },
     )
-
     observer.observe(sentinel)
     return () => observer.disconnect()
-  }, [keywords, total])
+  }, [keywords, categoryId, loading, hasMore])
 
-  if (initialLoading) {
-    return (
-      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-        {Array.from({ length: 6 }).map((_, i) => (
-          <CardSkeleton key={i} />
-        ))}
-      </div>
-    )
-  }
-
-  if (!posts.length) {
-    return (
-      <div className='flex items-center justify-center py-20 text-muted-foreground'>
-        暂无内容
-      </div>
-    )
-  }
+  const empty = !loading && !hasMore && posts.length === 0
 
   return (
-    <>
-      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-        {posts.map(post => (
-          <PostCard key={post.id} post={post} />
-        ))}
-      </div>
-
-      <div ref={sentinelRef} className='h-2' />
-
-      {isPending && (
-        <div className='flex h-16 items-center justify-center text-sm text-muted-foreground'>
-          加载中...
+    <div className='flex flex-col gap-4'>
+      {/* 帖子网格 */}
+      {posts.length > 0 && (
+        <div className={GRID}>
+          {posts.map(post => (
+            <PostCard
+              key={post.id}
+              post={post}
+            />
+          ))}
         </div>
       )}
-    </>
+
+      {/* 空状态 */}
+      {empty && (
+        <div className='py-20 text-center text-muted-foreground'>暂无内容</div>
+      )}
+
+      {/* 加载骨架 / 哨兵 */}
+      {hasMore && (
+        <div
+          ref={sentinelRef}
+          className={GRID}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      )}
+
+      {/* 到底提示 */}
+      {!hasMore && posts.length > 0 && (
+        <div className='py-6 text-center text-sm text-muted-foreground'>
+          没有更多了哦~
+        </div>
+      )}
+    </div>
   )
 }

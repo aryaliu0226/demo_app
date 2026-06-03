@@ -27,7 +27,7 @@ export type MyPost = Prisma.PostGetPayload<{
 }>
 
 // 验 JWT + 查 DB，返回用户资料；DB 中不存在时跳回登录页
-export async function getLoginUser(): Promise<Profile> {
+export async function prismaGetLoginUser(): Promise<Profile> {
   const userId = await verifyAuth()
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -49,8 +49,22 @@ export async function getLoginUser(): Promise<Profile> {
   return user
 }
 
+// 更新用户资料
+export async function prismaUpdateUserProfile(
+  userId: string,
+  data: {
+    nickname?: string
+    name?: string
+    email?: string
+    phone?: string
+    brief?: string
+  },
+) {
+  return prisma.user.update({ where: { id: userId }, data })
+}
+
 // 查询当前登录用户的帖子列表
-export async function getMyPostsApi(
+export async function prismaGetMyPosts(
   params: PostQuery,
 ): Promise<{ data: MyPost[]; total: number }> {
   const userId = await verifyAuth()

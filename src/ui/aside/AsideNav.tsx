@@ -6,7 +6,10 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useProfile } from '@/ui/profile/ProfilePrivider'
 
-const navLinks = [{ href: '/posts', label: '宠友圈' }]
+const navLinks = [
+  { href: '/posts', label: '宠友圈' },
+  { href: '/profile', label: '我的' },
+]
 
 export default function AsideNav() {
   const pathname = usePathname()

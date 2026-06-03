@@ -128,6 +128,7 @@ const followData: FollowSeedInput[] = [
 
 type PostSeedInput = {
   authorEmail: string
+  categoryLabel: string
   title: string
   content: string
   published: boolean
@@ -148,6 +149,21 @@ const postImageUrls = [
   'https://images.unsplash.com/photo-1425082661705-1834bfd09dca',
 ]
 
+const postCategoryLabels = [
+  'Dog',
+  'Cat',
+  'Rabbit',
+  'Fish',
+  'Parrot',
+  'Snake',
+  'Hamster',
+  'Turtle',
+  'Bird',
+  'Lizard',
+  'Ferret',
+  'Guinea Pig',
+]
+
 const getPostPictures = (index: number) => [
   postImageUrls[index % postImageUrls.length],
   postImageUrls[(index + 1) % postImageUrls.length],
@@ -162,6 +178,7 @@ const authorEmails = userData
 const postData: PostSeedInput[] = [
   {
     authorEmail: 'alice@prisma.io',
+    categoryLabel: 'Dog',
     title: '1. 第一次带狗狗去公园',
     content: '今天阳光很好，带毛孩子去了附近的草地，它一路都很兴奋。',
     published: true,
@@ -179,6 +196,7 @@ const postData: PostSeedInput[] = [
   },
   {
     authorEmail: 'alice@prisma.io',
+    categoryLabel: 'Cat',
     title: '2. 猫咪新玩具测评',
     content: '买了一个自动逗猫球，猫主子先嫌弃了十分钟，然后玩了一下午。',
     published: true,
@@ -196,6 +214,7 @@ const postData: PostSeedInput[] = [
   },
   {
     authorEmail: 'bob@prisma.io',
+    categoryLabel: 'Rabbit',
     title: '3. 新手养兔子的几个小经验',
     content: '饮食、清洁和活动空间都很重要，兔子比想象中更需要陪伴。',
     published: true,
@@ -213,6 +232,7 @@ const postData: PostSeedInput[] = [
   },
   {
     authorEmail: 'bob@prisma.io',
+    categoryLabel: 'Fish',
     title: '4. 水族箱换水记录',
     content: '这周调整了过滤系统，鱼的状态明显更稳定了。',
     published: false,
@@ -229,6 +249,7 @@ const postData: PostSeedInput[] = [
   },
   {
     authorEmail: 'cindy@example.com',
+    categoryLabel: 'Parrot',
     title: '5. 鹦鹉学会的新词',
     content: '它今天突然学会说早上好，虽然发音还有点含糊。',
     published: true,
@@ -240,6 +261,7 @@ const postData: PostSeedInput[] = [
   },
   {
     authorEmail: 'david@example.com',
+    categoryLabel: 'Snake',
     title: '6. 关于蛇类饲养温度',
     content: '温控垫和温湿度计非常关键，环境稳定比频繁打扰更重要。',
     published: true,
@@ -251,6 +273,7 @@ const postData: PostSeedInput[] = [
   },
   {
     authorEmail: 'momo@example.com',
+    categoryLabel: 'Hamster',
     title: '7. 仓鼠夜间活动观察',
     content: '晚上十点之后最活跃，滚轮、藏食和整理垫料都很频繁。',
     published: true,
@@ -363,6 +386,7 @@ const generatedPostTitles = [
 const generatedPostData: PostSeedInput[] = generatedPostTitles.map(
   (title, index) => ({
     authorEmail: authorEmails[index % authorEmails.length],
+    categoryLabel: postCategoryLabels[index % postCategoryLabels.length],
     title,
     content: `${title}，记录一次真实的照顾过程，也整理了几个后续可以继续优化的小细节。`,
     published: index % 9 !== 0,
@@ -559,6 +583,7 @@ async function seedPosts() {
       stars: post.stars,
       likeCount: post.likeCount,
       comments: post.comments,
+      category: { connect: { label: post.categoryLabel } },
     }
 
     if (existing) {

@@ -1,6 +1,6 @@
 /** @format */
 
-import { getPostByIdApi } from '@/lib/dal/post'
+import { prismaGetPostById } from '@/lib/dal/post'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Header from '@/ui/NavHeader'
@@ -22,7 +22,7 @@ export default async function ProfilePostDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const post = await getPostByIdApi(id)
+  const post = await prismaGetPostById(id)
 
   if (!post) notFound()
 

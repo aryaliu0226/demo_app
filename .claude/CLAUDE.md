@@ -35,7 +35,7 @@ src/
       layout.tsx              登录页布局
       page.tsx                登录/注册页（使用 AuthForm）
     (dashboard)/
-      layout.tsx              主应用布局（getLoginUser → ProfileProvider + 侧边栏 + 顶部栏）
+      layout.tsx              主应用布局（prismaGetLoginUser → ProfileProvider + 侧边栏 + 顶部栏）
       posts/
         page.tsx              帖子列表页（纯壳，数据由 PostList 客户端拉取）
         [id]/page.tsx         帖子详情（Server，含评论 + 点赞）
@@ -53,12 +53,13 @@ src/
     auth.ts                   纯鉴权工具：JWT 签名/验证、Cookie 读写、verifyAuth()、buildLoginRedirectUrl()
     prisma.ts                 Prisma 单例（PrismaPg adapter）
     dal/
-      post.ts                 帖子数据查询 + Prisma 类型（getPostsApi、getPostByIdApi、Post、PostDetail）
-      profile.ts              用户数据查询 + Prisma 类型（getLoginUser、getMyPostsApi、Profile、MyPost）
+      post.ts                 帖子 Prisma 查询 + 类型（prismaGetPosts、prismaGetPostById、Post、PostDetail）
+      profile.ts              用户 Prisma 查询 + 类型（prismaGetLoginUser、prismaGetMyPosts、prismaUpdateUserProfile、Profile、MyPost）
+      user.ts                 账号 Prisma 操作（prismaFindUserByAccount、prismaCreateUser）
     actions/
-      auth.ts                 loginApi Server Action（登录/注册二合一，客户端入口）
-      profile.ts              updateProfile Server Action（编辑个人资料，客户端入口）
-      post.ts                 fetchPostsAction Server Action（无限滚动加载，客户端入口）
+      auth.ts                 fetchLoginAction（登录/注册，客户端入口）
+      profile.ts              updateProfileAction（编辑个人资料，客户端入口）
+      post.ts                 fetchPostsAction（无限滚动加载，客户端入口）
   ui/
     globals.css               Tailwind v4 + 全局主题 token
     aside/
@@ -77,7 +78,7 @@ src/
       Profile.tsx             个人信息展示 + 编辑组件（'use client'）
       ProfilePrivider.tsx     Profile React Context（'use client'）
     NavHeader.tsx             通用返回导航头（帖子详情页使用）
-    ScrollPage.tsx            （保留文件，当前逻辑已移入 PostList）
+    ScrollPage.tsx            保留文件（当前逻辑已移入 PostList）
     ThemePrivider.tsx         主题 Context 包装器
     AppLogo.tsx / TopLogo.tsx Logo 组件
     icon/                     图标组件
@@ -108,7 +109,7 @@ prisma/
 
 ### 认证流程
 
-1. `loginApi`（`lib/actions/auth.ts`）接收表单，zod 校验，查账号是否存在
+1. `fetchLoginAction`（`lib/actions/auth.ts`）接收表单，zod 校验，查账号是否存在
 2. 存在 → bcrypt 验密码；不存在 → 创建用户
 3. 调 `setAuthCookie(userId)` 写 httpOnly cookie `access_token`（HS256 JWT，24h）
 4. 从 `Referer` 头读取 `?redirect=` 参数，登录后跳回原页面
@@ -120,13 +121,13 @@ prisma/
 ### 函数选择
 
 ```
-只需要 userId（写操作、鉴权）→ verifyAuth()       仅验 JWT，不查 DB
-需要展示用户信息               → getLoginUser()   JWT + DB 查询
+只需要 userId（写操作、鉴权）→ verifyAuth()             仅验 JWT，不查 DB
+需要展示用户信息               → prismaGetLoginUser()   JWT + DB 查询
 ```
 
 ### ProfileProvider 模式
 
-`(dashboard)/layout.tsx` 调用 `getLoginUser()` 一次，结果通过 `<ProfileProvider>` 注入。
+`(dashboard)/layout.tsx` 调用 `prismaGetLoginUser()` 一次，结果通过 `<ProfileProvider>` 注入。
 子组件调 `useProfile()` 获取用户数据，无需额外请求。
 
 ## 数据层分层
@@ -134,16 +135,17 @@ prisma/
 ```
 Client Component
       ↓ 调用
-lib/actions/*   （'use server'，Server Action，客户端边界）
+lib/actions/*    （'use server'，命名规则：fetchXxxAction / updateXxxAction）
       ↓ 调用
-lib/dal/*       （纯服务端数据函数，直接操作 Prisma）
+lib/dal/*        （纯服务端数据函数，命名规则：prismaXxx，直接操作 Prisma）
       ↓
-lib/prisma.ts   （Prisma 单例）
+lib/prisma.ts    （Prisma 单例）
 ```
 
 - Server Component / layout 可以直接调 `lib/dal/*`，无需经过 actions
 - Client Component 只能调 `lib/actions/*`
-- 新增数据库操作：先在 `lib/dal/` 写查询函数，再在 `lib/actions/` 暴露给客户端
+- `lib/actions/*` 中不允许直接 import prisma，必须通过 `lib/dal/*`
+- 新增数据库操作：先在 `lib/dal/` 写 `prismaXxx` 函数，再在 `lib/actions/` 写 `xxxAction` 暴露给客户端
 
 ## Post Feed 行为
 
@@ -184,7 +186,19 @@ npx tsc --noEmit    # 每次改完必跑
 - 不要新增 `middleware.ts`
 - 不要在组件里硬编码颜色，使用主题 token
 - 不要在 Client Component 里直接调 `lib/dal/*`，走 `lib/actions/*`
+- 不要在 `lib/actions/*` 里直接 import prisma，通过 `lib/dal/*` 操作数据库
 - 不要把 `pageNo` 写入 URL，无限滚动页码只存客户端 ref
 - 不要在未经确认的情况下执行 seed 或 migrate
 - 不要把敏感字段（password、phone）写入 JWT 或客户端 context
-- 不要调用 `getLoginUser()` 只为拿 userId，用 `verifyAuth()` 代替
+- 不要调用 `prismaGetLoginUser()` 只为拿 userId，用 `verifyAuth()` 代替
+
+## Tailwind className 书写顺序
+
+按以下顺序排列 className，保持一致性：
+
+1. 宽高（`w-*`、`h-*`、`min-w-*`、`max-h-*` 等）
+2. 字体（`text-*`、`font-*`、`leading-*`、`tracking-*`）
+3. Padding（`p-*`、`px-*`、`py-*`、`pt-*` 等）
+4. Margin（`m-*`、`mx-*`、`my-*`、`mt-*` 等）
+5. Flex / Grid（`flex`、`grid`、`items-*`、`justify-*`、`gap-*`、`col-span-*` 等）
+6. 其他（定位、颜色、边框、圆角、阴影、过渡等）

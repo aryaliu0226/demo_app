@@ -3,8 +3,8 @@
 
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
-import prisma from '@/lib/prisma'
 import { verifyAuth } from '@/lib/auth'
+import { prismaUpdateUserProfile } from '@/lib/dal/profile'
 
 const updateProfileSchema = z.object({
   nickname: z.string().max(32, '昵称最多 32 位').optional(),
@@ -16,7 +16,7 @@ const updateProfileSchema = z.object({
 
 export type UpdateProfileState = { error?: string; success?: boolean } | null
 
-export async function updateProfile(
+export async function updateProfileAction(
   prevState: UpdateProfileState,
   formData: FormData,
 ): Promise<UpdateProfileState> {
@@ -35,7 +35,7 @@ export async function updateProfile(
   }
 
   try {
-    await prisma.user.update({ where: { id: userId }, data: parsed.data })
+    await prismaUpdateUserProfile(userId, parsed.data)
   } catch {
     return { error: '保存失败，请重试' }
   }

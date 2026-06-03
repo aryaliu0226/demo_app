@@ -3,12 +3,11 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { loginApi } from '@/lib/actions/auth'
-
+import { fetchLoginAction } from '@/lib/actions/login'
 import ErrorIcon from '@/ui/icon/ErrorIcon'
 
 export default function AuthForm() {
-  const [state, formAction, pending] = useActionState(loginApi, null)
+  const [state, formAction, pending] = useActionState(fetchLoginAction, null)
   const [account, setAccount] = useState('丹丹')
   const [password, setPassword] = useState('123456ldd')
 

@@ -1,18 +1,14 @@
 /** @format */
 
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Noto_Sans_SC } from 'next/font/google'
 import '../ui/globals.css'
 import ThemeProvider from '@/ui/ThemePrivider'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const notoSansSC = Noto_Sans_SC({
+  variable: '--font-sans',
   subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  weight: ['400', '500', '700'],
 })
 
 export const metadata: Metadata = {
@@ -27,8 +23,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang='en'
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      lang='zh-CN'
+      className={`${notoSansSC.variable} antialiased`}>
       <body>
         <ThemeProvider>{children}</ThemeProvider>
       </body>

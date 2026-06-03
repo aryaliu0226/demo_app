@@ -1,8 +1,9 @@
 /** @format */
 
-import { getPostByIdApi } from '@/lib/dal/post'
+import { prismaGetPostById } from '@/lib/dal/post'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
+import clsx from 'clsx'
 import Header from '@/ui/NavHeader'
 import PostIcon from '@/ui/post/PostIcon'
 
@@ -23,7 +24,7 @@ export default async function PostDetail({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const post = await getPostByIdApi(id)
+  const post = await prismaGetPostById(id)
   console.log('Fetched post detail:', post) // 调试输出
 
   if (!post) notFound()
@@ -112,7 +113,11 @@ export default async function PostDetail({
         {/* 图片列表 */}
         {pictures && pictures.length > 0 && (
           <div
-            className={`mb-8 grid gap-2 ${pictures.length === 1 ? 'grid-cols-1' : pictures.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+            className={clsx('mb-8 grid gap-2', {
+              'grid-cols-1': pictures.length === 1,
+              'grid-cols-2': pictures.length === 2,
+              'grid-cols-3': pictures.length >= 3,
+            })}>
             {pictures.map((url, index) => (
               <div
                 key={index}

@@ -7,6 +7,7 @@ export type PostQuery = {
   pageNo: number
   pageSize: number
   keywords?: string
+  categoryId?: string
 }
 
 export type Post = Prisma.PostGetPayload<{
@@ -21,11 +22,14 @@ export type PostDetail = Prisma.PostGetPayload<{
   }
 }>
 
-export const getPostsApi = async (
+export const prismaGetPosts = async (
   params: PostQuery,
 ): Promise<{ data: Post[]; total: number }> => {
-  const { pageNo = 1, pageSize = 20, keywords = '' } = params
-  const where = { title: { contains: keywords } }
+  const { pageNo = 1, pageSize = 20, keywords = '', categoryId } = params
+  const where: Prisma.PostWhereInput = {
+    title: { contains: keywords },
+    ...(categoryId ? { categoryId } : {}),
+  }
   const skip = (pageNo - 1) * pageSize
 
   const [data, total] = await prisma.$transaction([
@@ -42,7 +46,21 @@ export const getPostsApi = async (
   return { data, total }
 }
 
-export const getPostByIdApi = async (id: string): Promise<PostDetail | null> => {
+export const prismaGetSearchSuggestions = async (
+  keywords: string,
+  limit = 8,
+): Promise<string[]> => {
+  if (!keywords.trim()) return []
+  const posts = await prisma.post.findMany({
+    where: { title: { contains: keywords, mode: 'insensitive' } },
+    select: { title: true },
+    take: limit,
+    orderBy: { createdAt: Prisma.SortOrder.desc },
+  })
+  return posts.map(p => p.title)
+}
+
+export const prismaGetPostById = async (id: string): Promise<PostDetail | null> => {
   return prisma.post.findUnique({
     where: { id },
     include: {
