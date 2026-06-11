@@ -91,19 +91,9 @@ prisma/
   migrations/                 迁移历史
 ```
 
-## 主题系统
+## 样式规范
 
-主题色统一在 `src/ui/globals.css` 的 `:root` 中定义，只需修改这三行即可切换主题：
-
-```css
-:root {
-  --background: #20202b;
-  --foreground: #f0f0f0;
-  --hover: rgba(242, 242, 242, 0.1);
-}
-```
-
-组件里使用语义类（`bg-background`、`bg-hover`、`text-muted-foreground` 等），**不要在单个元素上硬编码颜色**。
+详见 `.claude/docs/style-guide.md`。
 
 ## Auth System
 
@@ -191,14 +181,3 @@ npx tsc --noEmit    # 每次改完必跑
 - 不要在未经确认的情况下执行 seed 或 migrate
 - 不要把敏感字段（password、phone）写入 JWT 或客户端 context
 - 不要调用 `prismaGetLoginUser()` 只为拿 userId，用 `verifyAuth()` 代替
-
-## Tailwind className 书写顺序
-
-按以下顺序排列 className，保持一致性：
-
-1. 宽高（`w-*`、`h-*`、`min-w-*`、`max-h-*` 等）
-2. 字体（`text-*`、`font-*`、`leading-*`、`tracking-*`）
-3. Padding（`p-*`、`px-*`、`py-*`、`pt-*` 等）
-4. Margin（`m-*`、`mx-*`、`my-*`、`mt-*` 等）
-5. Flex / Grid（`flex`、`grid`、`items-*`、`justify-*`、`gap-*`、`col-span-*` 等）
-6. 其他（定位、颜色、边框、圆角、阴影、过渡等）

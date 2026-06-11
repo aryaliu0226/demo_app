@@ -1,6 +1,6 @@
 /** @format */
 
-import { PrismaClient, Prisma } from '../src/generated/prisma/client'
+import { PrismaClient, Prisma } from '../generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import 'dotenv/config'
 
@@ -34,6 +34,8 @@ type UserSeedInput = Prisma.UserCreateInput & {
   account: string
   email: string
   phone: string
+  gender: string
+  birthday: Date
 }
 
 const userData: UserSeedInput[] = [
@@ -48,6 +50,8 @@ const userData: UserSeedInput[] = [
     email: 'alice@prisma.io',
     brief: '喜欢带狗狗去城市公园，记录日常训练和户外散步。',
     address: '上海',
+    gender: 'female',
+    birthday: new Date('2000-03-15'),
   },
   {
     nickname: 'bob',
@@ -60,6 +64,8 @@ const userData: UserSeedInput[] = [
     email: 'bob@prisma.io',
     brief: '兔子和鱼缸双修玩家，偏爱整理新手饲养经验。',
     address: '杭州',
+    gender: 'male',
+    birthday: new Date('1996-07-22'),
   },
   {
     nickname: 'cindy',
@@ -72,6 +78,8 @@ const userData: UserSeedInput[] = [
     email: 'cindy@example.com',
     brief: '家有一只话很多的鹦鹉，分享鸟类训练和陪伴记录。',
     address: '成都',
+    gender: 'female',
+    birthday: new Date('2002-11-08'),
   },
   {
     nickname: 'david',
@@ -84,6 +92,8 @@ const userData: UserSeedInput[] = [
     email: 'david@example.com',
     brief: '爬宠爱好者，关注温湿度、环境稳定和低打扰饲养。',
     address: '广州',
+    gender: 'male',
+    birthday: new Date('1993-05-30'),
   },
   {
     nickname: 'momo',
@@ -96,6 +106,8 @@ const userData: UserSeedInput[] = [
     email: 'momo@example.com',
     brief: '仓鼠观察员，喜欢记录夜间活动和笼具改造。',
     address: '南京',
+    gender: 'female',
+    birthday: new Date('1998-09-04'),
   },
 ]
 
@@ -533,6 +545,8 @@ async function seedUsers() {
         email: user.email,
         brief: user.brief,
         address: user.address,
+        gender: user.gender,
+        birthday: user.birthday,
       },
       create: user,
     })

@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -13,17 +13,19 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  password String  @default("")
-  account  String  @unique
-  nickname String? @unique
+  id       String    @id @default(uuid())
+  password String    @default("")
+  account  String    @unique
+  nickname String?   @unique
   name     String?
-  age      Int?    @default(0)
-  phone    String? @unique
+  age      Int?      @default(0)
+  phone    String?   @unique
   avatar   String?
-  email    String? @unique
-  brief    String? @default("")
-  address  String? @default("")
+  email    String?   @unique
+  brief    String?   @default("")
+  address  String?   @default("")
+  gender   String?   @default("")
+  birthday DateTime?
 
   // 总收到点赞数（冗余计数，写入时同步维护）
   stars          Int    @default(0)
@@ -43,6 +45,8 @@ model User {
   comments Comment[]
   // 该用户发出的所有点赞
   likes    Like[]
+  // 该用户收藏的帖子
+  favorites Favorite[]
 }
 
 model Post {
@@ -70,6 +74,8 @@ model Post {
   commentList Comment[]
   // 点赞列表
   likes       Like[]
+  // 收藏列表
+  favorites   Favorite[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,15 +103,28 @@ model Like {
   @@unique([userId, postId])
 }
 
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+
+  // 同一用户对同一帖子只能收藏一次
+  @@unique([userId, postId])
+}
+
 model Pet {
   id         String      @id @default(uuid())
+  avatar     String?
   name       String
   age        Int
   categoryId String
   category   PetCategory @relation(fields: [categoryId], references: [id])
-  avatar     String?
   user       User?       @relation(fields: [userId], references: [id])
   userId     String?
+  status     Int         @default(1)
 }
 
 model PetCategory {
