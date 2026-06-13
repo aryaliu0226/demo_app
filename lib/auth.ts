@@ -4,12 +4,13 @@
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { SignJWT, jwtVerify } from 'jose'
+import { encodeText } from '@/lib/text-codec'
 
 // ─── JWT 密钥 ─────────────────────────────────────────────────────────────────
 function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET
   if (!secret) throw new Error('环境变量 JWT_SECRET 未配置')
-  return new TextEncoder().encode(secret)
+  return encodeText(secret)
 }
 
 // ─── 写入认证 Cookie（供 login.ts 调用）──────────────────────────────────────

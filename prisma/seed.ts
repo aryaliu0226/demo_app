@@ -28,6 +28,21 @@ const petCategoryData: Prisma.PetCategoryCreateInput[] = [
   { name: '豚鼠', label: 'Guinea Pig' },
 ]
 
+// ─── Role ─────────────────────────────────────────────────────────────────────
+
+const roleData: Prisma.RoleCreateInput[] = [
+  {
+    name: 'Admin',
+    label: '管理员',
+    description: '拥有后台管理权限的用户角色',
+  },
+  {
+    name: 'User',
+    label: '普通用户',
+    description: '默认普通用户角色',
+  },
+]
+
 // ─── User ─────────────────────────────────────────────────────────────────────
 
 type UserSeedInput = Prisma.UserCreateInput & {
@@ -202,7 +217,7 @@ const postData: PostSeedInput[] = [
       'https://images.unsplash.com/photo-1425082661705-1834bfd09dca',
     ],
     video: null,
-    stars: 18,
+    stars: 3,
     likeCount: 4, // bob, cindy, momo, david
     comments: 2,
   },
@@ -220,7 +235,7 @@ const postData: PostSeedInput[] = [
       'https://images.unsplash.com/photo-1425082661705-1834bfd09dca',
     ],
     video: null,
-    stars: 11,
+    stars: 1,
     likeCount: 2, // bob, david
     comments: 0,
   },
@@ -238,7 +253,7 @@ const postData: PostSeedInput[] = [
       'https://images.unsplash.com/photo-1425082661705-1834bfd09dca',
     ],
     video: null,
-    stars: 24,
+    stars: 4,
     likeCount: 3, // alice, cindy, momo
     comments: 2,
   },
@@ -255,7 +270,7 @@ const postData: PostSeedInput[] = [
       'https://images.unsplash.com/photo-1425082661705-1834bfd09dca',
     ],
     video: null,
-    stars: 6,
+    stars: 0,
     likeCount: 0,
     comments: 0,
   },
@@ -267,7 +282,7 @@ const postData: PostSeedInput[] = [
     published: true,
     pictures: getPostPictures(4),
     video: 'https://example.com/videos/parrot-good-morning.mp4',
-    stars: 31,
+    stars: 3,
     likeCount: 4, // alice, bob, david, momo
     comments: 2,
   },
@@ -279,7 +294,7 @@ const postData: PostSeedInput[] = [
     published: true,
     pictures: getPostPictures(5),
     video: null,
-    stars: 16,
+    stars: 1,
     likeCount: 0,
     comments: 0,
   },
@@ -291,7 +306,7 @@ const postData: PostSeedInput[] = [
     published: true,
     pictures: getPostPictures(6),
     video: null,
-    stars: 9,
+    stars: 2,
     likeCount: 2, // alice, bob
     comments: 0,
   },
@@ -404,8 +419,8 @@ const generatedPostData: PostSeedInput[] = generatedPostTitles.map(
     published: index % 9 !== 0,
     pictures: getPostPictures(index),
     video: null,
-    stars: 8 + ((index * 7) % 36),
-    likeCount: 18 + ((index * 11) % 92),
+    stars: 1 + ((index * 3) % 4),
+    likeCount: 1 + ((index * 2) % 4),
     comments: index < 18 ? 2 : 0,
   }),
 )
@@ -420,7 +435,7 @@ type LikeSeedInput = {
 }
 
 // 与 postData 中的 likeCount 一一对应
-const likeData: LikeSeedInput[] = [
+const featuredLikeData: LikeSeedInput[] = [
   // 1. 第一次带狗狗去公园 (4)
   { userEmail: 'bob@prisma.io',     postTitle: '1. 第一次带狗狗去公园' },
   { userEmail: 'cindy@example.com', postTitle: '1. 第一次带狗狗去公园' },
@@ -442,6 +457,45 @@ const likeData: LikeSeedInput[] = [
   { userEmail: 'alice@prisma.io',   postTitle: '7. 仓鼠夜间活动观察' },
   { userEmail: 'bob@prisma.io',     postTitle: '7. 仓鼠夜间活动观察' },
 ]
+
+const getInteractingEmails = (
+  post: PostSeedInput,
+  count: number,
+  offset: number,
+) => {
+  const candidates = authorEmails.filter(email => email !== post.authorEmail)
+  return Array.from({ length: Math.min(count, candidates.length) }, (_, index) => (
+    candidates[(offset + index) % candidates.length]
+  ))
+}
+
+const generatedLikeData: LikeSeedInput[] = generatedPostData.flatMap(
+  (post, index) => (
+    getInteractingEmails(post, post.likeCount, index).map(userEmail => ({
+      userEmail,
+      postTitle: post.title,
+    }))
+  ),
+)
+
+const likeData: LikeSeedInput[] = [
+  ...featuredLikeData,
+  ...generatedLikeData,
+]
+
+// ─── Favorite ─────────────────────────────────────────────────────────────────
+
+type FavoriteSeedInput = {
+  userEmail: string
+  postTitle: string
+}
+
+const favoriteData: FavoriteSeedInput[] = allPostData.flatMap((post, index) => (
+  getInteractingEmails(post, post.stars, index + 2).map(userEmail => ({
+    userEmail,
+    postTitle: post.title,
+  }))
+))
 
 // ─── Comment ─────────────────────────────────────────────────────────────────
 
@@ -503,17 +557,18 @@ type PetSeedInput = {
   categoryLabel: string
   ownerEmail: string
   avatar: string | null
+  status: number
 }
 
 const petData: PetSeedInput[] = [
-  { name: '奶茶', age: 3, categoryLabel: 'Dog',     ownerEmail: 'alice@prisma.io',   avatar: 'https://images.unsplash.com/photo-1552053831-71594a27632d' },
-  { name: '芝麻', age: 2, categoryLabel: 'Cat',     ownerEmail: 'alice@prisma.io',   avatar: 'https://images.unsplash.com/photo-1574158622682-e40e69881006' },
-  { name: '雪球', age: 1, categoryLabel: 'Rabbit',  ownerEmail: 'bob@prisma.io',     avatar: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308' },
-  { name: '小蓝', age: 4, categoryLabel: 'Fish',    ownerEmail: 'bob@prisma.io',     avatar: 'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5' },
-  { name: '豆豆', age: 2, categoryLabel: 'Parrot',  ownerEmail: 'cindy@example.com', avatar: 'https://images.unsplash.com/photo-1552728089-57bdde30beb3' },
-  { name: '青竹', age: 5, categoryLabel: 'Snake',   ownerEmail: 'david@example.com', avatar: 'https://images.unsplash.com/photo-1531386151447-fd76ad50012f' },
-  { name: '壳壳', age: 8, categoryLabel: 'Turtle',  ownerEmail: 'david@example.com', avatar: 'https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f' },
-  { name: '布丁', age: 1, categoryLabel: 'Hamster', ownerEmail: 'momo@example.com',  avatar: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca' },
+  { name: '奶茶', age: 3, categoryLabel: 'Dog',     ownerEmail: 'alice@prisma.io',   avatar: 'https://images.unsplash.com/photo-1552053831-71594a27632d', status: 1 },
+  { name: '芝麻', age: 2, categoryLabel: 'Cat',     ownerEmail: 'alice@prisma.io',   avatar: 'https://images.unsplash.com/photo-1574158622682-e40e69881006', status: 1 },
+  { name: '雪球', age: 1, categoryLabel: 'Rabbit',  ownerEmail: 'bob@prisma.io',     avatar: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308', status: 1 },
+  { name: '小蓝', age: 4, categoryLabel: 'Fish',    ownerEmail: 'bob@prisma.io',     avatar: 'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5', status: 1 },
+  { name: '豆豆', age: 2, categoryLabel: 'Parrot',  ownerEmail: 'cindy@example.com', avatar: 'https://images.unsplash.com/photo-1552728089-57bdde30beb3', status: 1 },
+  { name: '青竹', age: 5, categoryLabel: 'Snake',   ownerEmail: 'david@example.com', avatar: 'https://images.unsplash.com/photo-1531386151447-fd76ad50012f', status: 2 },
+  { name: '壳壳', age: 8, categoryLabel: 'Turtle',  ownerEmail: 'david@example.com', avatar: 'https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f', status: 1 },
+  { name: '布丁', age: 1, categoryLabel: 'Hamster', ownerEmail: 'momo@example.com',  avatar: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca', status: 1 },
 ]
 
 // ─── Seed Functions ───────────────────────────────────────────────────────────
@@ -525,6 +580,20 @@ async function seedPetCategories() {
       where: { label: category.label },
       update: { name: category.name },
       create: category,
+    })
+  }
+}
+
+async function seedRoles() {
+  console.log('Seeding roles...')
+  for (const role of roleData) {
+    await prisma.role.upsert({
+      where: { name: role.name },
+      update: {
+        label: role.label,
+        description: role.description,
+      },
+      create: role,
     })
   }
 }
@@ -650,6 +719,19 @@ async function seedLikes() {
     })
   }
 
+  for (const postSeed of allPostData) {
+    const post = await prisma.post.findFirst({
+      where: { title: postSeed.title, author: { email: postSeed.authorEmail } },
+    })
+    if (!post) continue
+
+    const likeCount = await prisma.like.count({ where: { postId: post.id } })
+    await prisma.post.update({
+      where: { id: post.id },
+      data: { likeCount },
+    })
+  }
+
   // 按 Like 表统计每位作者收到的点赞数，更新 User.stars
   for (const user of userData) {
     const receivedLikes = await prisma.like.count({
@@ -659,6 +741,36 @@ async function seedLikes() {
     await prisma.user.update({
       where: { email: user.email },
       data: { stars: receivedLikes },
+    })
+  }
+}
+
+async function seedFavorites() {
+  console.log('Seeding favorites...')
+  for (const { userEmail, postTitle } of favoriteData) {
+    const [user, post] = await Promise.all([
+      prisma.user.findUnique({ where: { email: userEmail } }),
+      prisma.post.findFirst({ where: { title: postTitle } }),
+    ])
+    if (!user || !post) continue
+
+    await prisma.favorite.upsert({
+      where:  { userId_postId: { userId: user.id, postId: post.id } },
+      update: {},
+      create: { userId: user.id, postId: post.id },
+    })
+  }
+
+  for (const postSeed of allPostData) {
+    const post = await prisma.post.findFirst({
+      where: { title: postSeed.title, author: { email: postSeed.authorEmail } },
+    })
+    if (!post) continue
+
+    const stars = await prisma.favorite.count({ where: { postId: post.id } })
+    await prisma.post.update({
+      where: { id: post.id },
+      data: { stars },
     })
   }
 }
@@ -674,6 +786,7 @@ async function seedPets() {
       name: pet.name,
       age: pet.age,
       avatar: pet.avatar,
+      status: pet.status,
       category: { connect: { label: pet.categoryLabel } },
       user:     { connect: { email: pet.ownerEmail } },
     }
@@ -690,11 +803,13 @@ async function seedPets() {
 
 export async function main() {
   await seedPetCategories()
+  await seedRoles()
   await seedUsers()
   await seedFollows()
   await seedPosts()
   await seedComments()
   await seedLikes()
+  await seedFavorites()
   await seedPets()
   console.log('Seed complete.')
 }

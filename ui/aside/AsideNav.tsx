@@ -7,12 +7,10 @@ import { usePathname } from 'next/navigation'
 import { useProfile } from '@/ui/profile/ProfilePrivider'
 import PawPrintIcon from '@/ui/icon/PawPrintIcon'
 import SparklesIcon from '@/ui/icon/SparklesIcon'
-import UserIcon from '@/ui/icon/UserIcon'
 
 const navLinks = [
   { href: '/posts', label: '宠友圈', icon: PawPrintIcon },
   { href: '/yoyoai', label: '问问YoYo', icon: SparklesIcon },
-  { href: '/profile', label: '我的', icon: UserIcon },
 ]
 
 export default function AsideNav() {
