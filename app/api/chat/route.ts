@@ -1,15 +1,22 @@
 /** @format */
 
 import { NextRequest } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { deepseek, deepseekModel } from '@/lib/ai/deepseek'
 import { getOptionalUserId } from '@/lib/auth'
+import {
+  prismaChatSessionBelongsToUser,
+  prismaCreateChatMessage,
+  prismaCreateUserChatMessageIfNeeded,
+} from '@/lib/dal/chat'
 import { encodeText } from '@/lib/text-codec'
 
 const MAX_MESSAGES = 20
 const MAX_MESSAGE_LENGTH = 2000
 
 const chatRequestSchema = z.object({
+  sessionId: z.string().uuid('会话不存在'),
   messages: z
     .array(
       z.object({
@@ -31,7 +38,7 @@ const chatRequestSchema = z.object({
 type ChatMessages = z.infer<typeof chatRequestSchema>['messages']
 type ParseChatRequestResult =
   | { success: false; error: string }
-  | { success: true; messages: ChatMessages }
+  | { success: true; sessionId: string; messages: ChatMessages }
 
 /* ── DeepSeek 错误码 → 中文提示 ─────────────────────────── */
 function friendlyError(status: number): string {
@@ -60,7 +67,11 @@ async function parseChatRequest(
       }
     }
 
-    return { success: true, messages: parsed.data.messages }
+    return {
+      success: true,
+      sessionId: parsed.data.sessionId,
+      messages: parsed.data.messages,
+    }
   } catch {
     return { success: false, error: '请求体必须是合法的 JSON' }
   }
@@ -79,7 +90,25 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: parsed.error }, { status: 400 })
   }
 
-  const messages = parsed.messages
+  const { sessionId, messages } = parsed
+  const sessionExists = await prismaChatSessionBelongsToUser(userId, sessionId)
+
+  if (!sessionExists) {
+    return Response.json({ error: '会话不存在' }, { status: 404 })
+  }
+
+  const latestUserMessage = [...messages]
+    .reverse()
+    .find(message => message.role === 'user')
+
+  if (!latestUserMessage) {
+    return Response.json({ error: '请先输入消息' }, { status: 400 })
+  }
+
+  await prismaCreateUserChatMessageIfNeeded({
+    sessionId,
+    content: latestUserMessage.content,
+  })
 
   try {
     const stream = await deepseek.chat.completions.create({
@@ -97,11 +126,28 @@ export async function POST(req: NextRequest) {
 
     const readable = new ReadableStream({
       async start(controller) {
-        for await (const chunk of stream) {
-          const text = chunk.choices[0]?.delta?.content ?? ''
-          if (text) controller.enqueue(encodeText(text))
+        let assistantContent = ''
+
+        try {
+          for await (const chunk of stream) {
+            const text = chunk.choices[0]?.delta?.content ?? ''
+            if (!text) continue
+
+            assistantContent += text
+            controller.enqueue(encodeText(text))
+          }
+        } finally {
+          if (assistantContent.trim()) {
+            await prismaCreateChatMessage({
+              sessionId,
+              role: 'assistant',
+              content: assistantContent,
+            })
+            revalidatePath('/yoyoai', 'layout')
+          }
+
+          controller.close()
         }
-        controller.close()
       },
     })
 

@@ -1,5 +1,6 @@
 /** @format */
 
+import Link from 'next/link'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import ChatSession from '@/ui/yoyoai/ChatSession'
 
@@ -27,13 +28,15 @@ export default function YoYoAILayout({
           </div>
         </div>
 
-        <button className='mb-5 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-foreground px-3 text-sm font-medium text-background transition hover:opacity-85'>
+        <Link
+          href='/yoyoai'
+          className='mb-5 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-foreground px-3 text-sm font-medium text-background transition hover:opacity-85'>
           <PlusIcon
             className='h-4 w-4'
             strokeWidth={2.4}
           />
           新建聊天
-        </button>
+        </Link>
 
         <ChatSession />
       </aside>

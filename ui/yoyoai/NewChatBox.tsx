@@ -1,67 +1,71 @@
 /** @format */
 'use client'
 
-import { useRef, useState } from 'react'
-import { PaperAirplaneIcon, StopIcon } from '@heroicons/react/24/outline'
+import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import ChatBox from '@/ui/yoyoai/ChatBox'
 
-type NewChatBoxProps = {}
-
-export default function NewChatBox({}: NewChatBoxProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const [loading, setLoading] = useState(false)
+export default function NewChatBox() {
+  const router = useRouter()
   const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const abortControllerRef = useRef<AbortController | null>(null)
 
-  function autoResize() {
-    const el = textareaRef.current
-    if (!el) return
-    el.style.height = 'auto'
-    el.style.height = `${Math.min(el.scrollHeight, 160)}px`
-  }
+  async function send() {
+    const text = input.trim()
+    if (!text || loading) return
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      onSend()
+    setError('')
+    setLoading(true)
+
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+
+    try {
+      const res = await fetch('/api/chat/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({ message: text }),
+      })
+
+      const data = (await res.json()) as { sessionId?: string; error?: string }
+
+      if (!res.ok) {
+        setError(data.error ?? '新建聊天失败，请稍后再试')
+        return
+      }
+
+      setInput('')
+      router.push(`/yoyoai/${data.sessionId}`)
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return
+      setError(err instanceof Error ? err.message : '新建聊天失败，请稍后再试')
+    } finally {
+      abortControllerRef.current = null
+      setLoading(false)
     }
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setInput(e.target.value)
-    autoResize()
+  function stop() {
+    abortControllerRef.current?.abort()
   }
-
-  function handleButtonClick() {
-    if (loading) {
-      return
-    }
-
-    onSend()
-    if (textareaRef.current) textareaRef.current.style.height = 'auto'
-  }
-
-  function onSend() {}
 
   return (
-    <div className='mx-auto my-10 px-4 pb-4 pt-3 flex items-end w-full max-w-2xl  gap-2 rounded-2xl border border-border bg-background px-4 py-2 shadow-[0_12px_40px_rgba(26,26,26,0.14)]'>
-      <textarea
-        ref={textareaRef}
+    <div>
+      <ChatBox
         value={input}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        placeholder='问问 YoYo…（Enter 发送，Shift+Enter 换行）'
-        rows={1}
-        className='min-h-8 leading-8 flex-1 resize-none bg-transparent  text-base text-foreground placeholder:text-muted-foreground outline-none'
+        loading={loading}
+        onChange={setInput}
+        onSend={send}
+        onStop={stop}
       />
-      <button
-        onClick={handleButtonClick}
-        disabled={!loading && !input.trim()}
-        className=' flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-foreground text-background transition hover:opacity-80 disabled:opacity-30'>
-        {loading ? (
-          <StopIcon className='h-4 w-4' />
-        ) : (
-          <PaperAirplaneIcon className='h-4 w-4' />
-        )}
-      </button>
+      {error && (
+        <p className='mx-auto -mt-2 max-w-2xl px-8 text-xs text-destructive'>
+          {error}
+        </p>
+      )}
     </div>
   )
 }
