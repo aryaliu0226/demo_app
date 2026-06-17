@@ -1,9 +1,13 @@
 /** @format */
-
+'use server'
 import { NextRequest } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { deepseek, deepseekModel } from '@/lib/ai/deepseek'
+import {
+  deepseek,
+  deepseekModel,
+  encodeDeepseekUserId,
+} from '@/lib/ai/deepseek'
 import { getOptionalUserId } from '@/lib/auth'
 import {
   prismaChatSessionBelongsToUser,
@@ -14,6 +18,12 @@ import { encodeText } from '@/lib/text-codec'
 
 const MAX_MESSAGES = 20
 const MAX_MESSAGE_LENGTH = 2000
+const MAX_TOKEN = 500
+
+const SYSTEM_PROMPT = `
+你是 YoYo，一个专注于宠物话题的 AI 助手，
+熟悉宠物饲养、健康、训练等知识，
+回答简洁友好。`
 
 const chatRequestSchema = z.object({
   sessionId: z.string().uuid('会话不存在'),
@@ -43,6 +53,7 @@ type ParseChatRequestResult =
 /* ── DeepSeek 错误码 → 中文提示 ─────────────────────────── */
 function friendlyError(status: number): string {
   const map: Record<number, string> = {
+    400: '格式错误',
     401: 'API Key 无效，请检查配置',
     402: 'DeepSeek 账户余额不足，请前往平台充值',
     422: '请求参数有误，请刷新后重试',
@@ -111,17 +122,24 @@ export async function POST(req: NextRequest) {
   })
 
   try {
+    const deepseekUserId = encodeDeepseekUserId(userId)
+
     const stream = await deepseek.chat.completions.create({
       model: deepseekModel,
       messages: [
         {
           role: 'system',
-          content:
-            '你是 YoYo，一个专注于宠物话题的 AI 助手，熟悉宠物饲养、健康、训练等知识，回答简洁友好。',
+          content: SYSTEM_PROMPT,
         },
         ...messages,
       ],
+      user: deepseekUserId,
       stream: true,
+      stream_options: {
+        include_usage: true,
+      },
+      max_token: MAX_TOKEN,
+      tools: [],
     })
 
     const readable = new ReadableStream({

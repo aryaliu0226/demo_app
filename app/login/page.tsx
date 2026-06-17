@@ -1,8 +1,8 @@
 /** @format */
 
 import AuthForm from '@/ui/login/AuthForm'
-import PhoneIcon from '@/ui/icon/PhoneIcon'
-import ChatIcon from '@/ui/icon/ChatIcon'
+import PhoneIcon from '@/Icon/PhoneIcon'
+import ChatIcon from '@/Icon/ChatIcon'
 
 export default function SigninPage() {
   return (

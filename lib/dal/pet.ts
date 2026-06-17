@@ -28,6 +28,7 @@ export const prismaGetMyPets = async (): Promise<MyPet[]> => {
 export const prismaCreatePet = async (data: {
   name: string
   age: number
+  birthDate: Date
   categoryId: string
   avatar?: string
 }) => {

@@ -84,14 +84,11 @@ export default function AddPetModal({ onClose, onSuccess }: Props) {
               />
             </Field>
 
-            {/* 年龄 */}
-            <Field label='年龄'>
+            {/* 出生日期 */}
+            <Field label='出生日期'>
               <input
-                name='age'
-                type='number'
-                min={0}
-                max={99}
-                placeholder='岁'
+                name='birthDate'
+                type='date'
                 required
                 className='input-field'
               />

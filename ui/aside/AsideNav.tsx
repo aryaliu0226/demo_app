@@ -5,8 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useProfile } from '@/ui/profile/ProfilePrivider'
-import PawPrintIcon from '@/ui/icon/PawPrintIcon'
-import SparklesIcon from '@/ui/icon/SparklesIcon'
+import PawPrintIcon from '@/Icon/PawPrintIcon'
+import SparklesIcon from '@/Icon/SparklesIcon'
 
 const navLinks = [
   { href: '/posts', label: '宠友圈', icon: PawPrintIcon },

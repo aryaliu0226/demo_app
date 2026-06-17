@@ -1,14 +1,15 @@
 /** @format */
 
 type QueryValue = string | number | boolean | null | undefined
-type QueryParams = Record<string, QueryValue>
 
-type RequestParams = QueryParams & {
+type RequestParams = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: unknown
   headers?: HeadersInit
   cache?: RequestCache
   next?: NextFetchRequestConfig
+  signal?: AbortSignal
+  [key: string]: unknown
 }
 
 const isServer = typeof window === 'undefined'
@@ -25,7 +26,7 @@ function getBaseUrl() {
   )
 }
 
-function buildUrl(path: string, params?: QueryParams) {
+function buildUrl(path: string, params?: RequestParams) {
   const url = new URL(path, getBaseUrl())
 
   if (!params) {
@@ -33,14 +34,24 @@ function buildUrl(path: string, params?: QueryParams) {
   }
 
   Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === null) {
-      return
+    if (value === undefined || value === null) return
+    const v = value as QueryValue
+    if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+      url.searchParams.set(key, String(v))
     }
-
-    url.searchParams.set(key, String(value))
   })
 
   return url.toString()
+}
+
+export class FetchError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
+    super(message)
+    this.name = 'FetchError'
+  }
 }
 
 export async function Fetch<T>(path: string, params: RequestParams = {}) {
@@ -50,6 +61,7 @@ export async function Fetch<T>(path: string, params: RequestParams = {}) {
     headers,
     cache = 'no-store',
     next,
+    signal,
     ...queryParams
   } = params
 
@@ -58,6 +70,7 @@ export async function Fetch<T>(path: string, params: RequestParams = {}) {
     method,
     cache,
     next,
+    signal,
     headers: {
       'Content-Type': 'application/json',
       ...headers,
@@ -67,7 +80,12 @@ export async function Fetch<T>(path: string, params: RequestParams = {}) {
   })
 
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status} ${response.statusText}`)
+    let message = `${response.status} ${response.statusText}`
+    try {
+      const errBody = (await response.json()) as { error?: string }
+      if (errBody.error) message = errBody.error
+    } catch {}
+    throw new FetchError(response.status, message)
   }
 
   return response.json() as Promise<T>

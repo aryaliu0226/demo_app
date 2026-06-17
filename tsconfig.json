@@ -25,6 +25,12 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@/c/*": [
+        "./app/_components/*"
+      ],
+      "@/Icon/*": [
+        "./app/_components/icon/*"
       ]
     }
   },

@@ -154,6 +154,7 @@ model Pet {
   id         String      @id @default(uuid())
   name       String
   age        Int
+  birthDate  DateTime?
   categoryId String
   avatar     String?
   userId     String?

@@ -4,7 +4,7 @@
 
 import { useActionState, useState } from 'react'
 import { fetchLoginAction } from '@/lib/actions/login'
-import ErrorIcon from '@/ui/icon/ErrorIcon'
+import ErrorIcon from '@/Icon/ErrorIcon'
 
 export default function AuthForm() {
   const [state, formAction, pending] = useActionState(fetchLoginAction, null)

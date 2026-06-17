@@ -3,7 +3,7 @@
 import { notFound } from 'next/navigation'
 import { verifyAuth } from '@/lib/auth'
 import { prismaGetChatSessionMessages } from '@/lib/dal/chat'
-import ChatMessage from '@/ui/yoyoai/ChatMessage'
+import ChatMessage from '../_components/ChatMessage'
 
 export default async function ChatMessagePage({
   params,
