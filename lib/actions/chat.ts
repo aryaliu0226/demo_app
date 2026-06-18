@@ -26,6 +26,7 @@ export async function fetchChatSessionsAction(): Promise<FetchChatSessionsResult
   return { success: true, sessions }
 }
 
+// 删除会话
 export async function deleteChatSessionAction(
   sessionId: string,
 ): Promise<DeleteChatSessionResult> {

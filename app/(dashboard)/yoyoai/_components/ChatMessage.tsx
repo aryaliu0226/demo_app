@@ -19,6 +19,8 @@ type ChatMessageProps = {
   initialMessages: Message[]
 }
 
+type MessageStatus = 'loading' | 'streaming' | 'completed' | 'error'
+
 export default function ChatMessage({
   sessionId,
   initialMessages,
@@ -50,6 +52,7 @@ export default function ChatMessage({
           signal: controller.signal,
           body: JSON.stringify({ sessionId, messages: history }),
         })
+        console.log('res-----', res)
 
         if (!res.ok) {
           const { error } = (await res.json()) as { error: string }
@@ -74,6 +77,7 @@ export default function ChatMessage({
           })
         }
       } catch (err) {
+        console.log('error-------', err)
         if (err instanceof DOMException && err.name === 'AbortError') return
 
         const msg = err instanceof Error ? err.message : '出错了，请稍后再试'

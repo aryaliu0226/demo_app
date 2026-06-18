@@ -44,6 +44,7 @@ export type CreatedChatSessionWithMessage = {
   message: CreatedChatMessage
 }
 
+//
 export async function prismaCreateChatSession(
   userId: string,
   title?: string,
@@ -121,7 +122,7 @@ export async function prismaCreateChatMessage(params: {
   })
 }
 
-export async function prismaChatSessionBelongsToUser(
+export async function prismaSessionIsolation(
   userId: string,
   sessionId: string,
 ): Promise<boolean> {
@@ -133,6 +134,7 @@ export async function prismaChatSessionBelongsToUser(
   return Boolean(session)
 }
 
+//
 export async function prismaCreateUserChatMessageIfNeeded(params: {
   sessionId: string
   content: string
@@ -248,9 +250,11 @@ export async function prismaGetChatSessionMessages(
   return session.messages.flatMap(message => {
     if (!isChatMessageRole(message.role)) return []
 
-    return [{
-      role: message.role,
-      content: message.content,
-    }]
+    return [
+      {
+        role: message.role,
+        content: message.content,
+      },
+    ]
   })
 }

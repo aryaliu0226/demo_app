@@ -10,7 +10,7 @@ import {
 } from '@/lib/ai/deepseek'
 import { getOptionalUserId } from '@/lib/auth'
 import {
-  prismaChatSessionBelongsToUser,
+  prismaSessionIsolation,
   prismaCreateChatMessage,
   prismaCreateUserChatMessageIfNeeded,
 } from '@/lib/dal/chat'
@@ -102,9 +102,9 @@ export async function POST(req: NextRequest) {
   }
 
   const { sessionId, messages } = parsed
-  const sessionExists = await prismaChatSessionBelongsToUser(userId, sessionId)
-
-  if (!sessionExists) {
+  //会话隔离：校验sessionId是否属于此userId
+  const isSessionMappingUser = await prismaSessionIsolation(userId, sessionId)
+  if (!isSessionMappingUser) {
     return Response.json({ error: '会话不存在' }, { status: 404 })
   }
 
@@ -124,6 +124,27 @@ export async function POST(req: NextRequest) {
   try {
     const deepseekUserId = encodeDeepseekUserId(userId)
 
+    //     {
+    //   "id": "930c60df-bf64-41c9-a88e-3ec75f81e00e",
+    //   "choices": [
+    //     {
+    //       "finish_reason": "stop",
+    //       "index": 0,
+    //       "message": {
+    //         "content": "Hello! How can I help you today?",
+    //         "role": "assistant"
+    //       }
+    //     }
+    //   ],
+    //   "created": 1705651092,
+    //   "model": "deepseek-v4-pro",
+    //   "object": "chat.completion",
+    //   "usage": {
+    //     "completion_tokens": 10,
+    //     "prompt_tokens": 16,
+    //     "total_tokens": 26
+    //   }
+    // }
     const stream = await deepseek.chat.completions.create({
       model: deepseekModel,
       messages: [
@@ -138,9 +159,10 @@ export async function POST(req: NextRequest) {
       stream_options: {
         include_usage: true,
       },
-      max_token: MAX_TOKEN,
+      // max_token: MAX_TOKEN,
       tools: [],
     })
+    console.log('stream-----', stream)
 
     const readable = new ReadableStream({
       async start(controller) {
@@ -148,6 +170,8 @@ export async function POST(req: NextRequest) {
 
         try {
           for await (const chunk of stream) {
+            console.log('chunk-----', chunk)
+
             const text = chunk.choices[0]?.delta?.content ?? ''
             if (!text) continue
 
