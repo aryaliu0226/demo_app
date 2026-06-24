@@ -2,7 +2,7 @@
 
 import TopLogo from '@/ui/TopLogo'
 import Image from 'next/image'
-import bgImage from '@/assets/bg.jpeg'
+import bgImage from '@/public/bg.jpeg'
 import AppLogo from '@/ui/AppLogo'
 
 export default function AuthLayout({
