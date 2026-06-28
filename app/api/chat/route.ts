@@ -7,14 +7,14 @@ import {
   deepseek,
   deepseekModel,
   encodeDeepseekUserId,
-} from '@/lib/ai/deepseek'
-import { getOptionalUserId } from '@/lib/auth'
+} from '@/app/_lib/ai/deepseek'
+import { getOptionalUserId } from '@/app/_lib/auth'
 import {
   prismaSessionIsolation,
   prismaCreateChatMessage,
   prismaCreateUserChatMessageIfNeeded,
-} from '@/lib/dal/chat'
-import { encodeText } from '@/lib/text-codec'
+} from '@/app/_lib/dal/chat'
+import { encodeText } from '@/app/_lib/text-codec'
 
 const MAX_MESSAGES = 20
 const MAX_MESSAGE_LENGTH = 2000

@@ -3,8 +3,8 @@
 import { NextRequest } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { getOptionalUserId } from '@/lib/auth'
-import { prismaCreateChatSessionWithMessage } from '@/lib/dal/chat'
+import { getOptionalUserId } from '@/app/_lib/auth'
+import { prismaCreateChatSessionWithMessage } from '@/app/_lib/dal/chat'
 
 const bodySchema = z.object({
   message: z

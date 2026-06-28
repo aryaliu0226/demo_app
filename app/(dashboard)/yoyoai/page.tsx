@@ -1,6 +1,6 @@
 /** @format */
 
-import { verifyAuth } from '@/lib/auth'
+import { verifyAuth } from '@/app/_lib/auth'
 import NewChatBox from './_components/NewChatBox'
 
 export default async function YoYoAIPage() {

@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import bgImage from '@/assets/bg.jpeg'
+import bgImage from '@/public/bg.jpeg'
 
 export default async function Home() {
   return (

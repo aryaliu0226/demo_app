@@ -1,8 +1,8 @@
 /** @format */
 
 import { notFound } from 'next/navigation'
-import { verifyAuth } from '@/lib/auth'
-import { prismaGetChatSessionMessages } from '@/lib/dal/chat'
+import { verifyAuth } from '@/app/_lib/auth'
+import { prismaGetChatSessionMessages } from '@/app/_lib/dal/chat'
 import ChatMessage from '../_components/ChatMessage'
 
 export default async function ChatMessagePage({

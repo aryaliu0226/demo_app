@@ -2,8 +2,8 @@
 
 import type { Metadata } from 'next'
 import { Noto_Sans_SC } from 'next/font/google'
-import '../ui/globals.css'
-import ThemeProvider from '@/ui/ThemePrivider'
+import './globals.css'
+import ThemeProvider from '@/app/_components/ThemePrivider'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 
 const notoSansSC = Noto_Sans_SC({

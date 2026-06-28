@@ -1,5 +1,5 @@
 /** @format */
-import HeaderLink from '@/ui/HeaderLink'
+import HeaderLink from '@/app/_components/HeaderLink'
 
 export default function PostLayout({
   children,

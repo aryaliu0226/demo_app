@@ -1,9 +1,9 @@
 /** @format */
 
-import TopLogo from '@/ui/TopLogo'
+import TopLogo from '@/app/_components/TopLogo'
 import Image from 'next/image'
 import bgImage from '@/public/bg.jpeg'
-import AppLogo from '@/ui/AppLogo'
+import AppLogo from '@/app/_components/AppLogo'
 
 export default function AuthLayout({
   children,

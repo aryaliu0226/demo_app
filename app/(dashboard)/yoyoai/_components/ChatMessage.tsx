@@ -7,9 +7,9 @@ import {
   ArrowPathIcon,
   CheckIcon,
 } from '@heroicons/react/24/outline'
-import { createTextDecoder } from '@/lib/text-codec'
-import ChatBox from '@/ui/yoyoai/ChatBox'
-import MarkdownMessage from '@/ui/yoyoai/MarkdownMessage'
+import { createTextDecoder } from '@/app/_lib/text-codec'
+import ChatBox from '@/app/_components/yoyoai/ChatBox'
+import MarkdownMessage from '@/app/_components/yoyoai/MarkdownMessage'
 
 type Role = 'user' | 'assistant'
 type Message = { role: Role; content: string }

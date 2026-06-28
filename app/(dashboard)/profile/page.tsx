@@ -1,7 +1,7 @@
 /** @format */
-import Pet from '@/ui/profile/pet/Pet'
-import Profile from '@/ui/profile/Profile'
-import Tabs from '@/ui/profile/tabs/Tabs'
+import Pet from '@/app/_components/profile/pet/Pet'
+import Profile from '@/app/_components/profile/Profile'
+import Tabs from '@/app/_components/profile/tabs/Tabs'
 
 export default function ProfilePage() {
   return (

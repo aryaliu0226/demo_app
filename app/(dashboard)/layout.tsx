@@ -1,9 +1,9 @@
 /** @format */
 
-import { prismaGetLoginUser } from '@/lib/dal/profile'
-import { ProfileProvider } from '@/ui/profile/ProfilePrivider'
-import AsideNav from '@/ui/aside/AsideNav'
-import HeaderNav from '@/ui/header/HeaderNav'
+import { prismaGetLoginUser } from '@/app/_lib/dal/profile'
+import { ProfileProvider } from '@/app/_components/profile/ProfilePrivider'
+import AsideNav from '@/app/_components/aside/AsideNav'
+import HeaderNav from '@/app/_components/header/HeaderNav'
 
 export default async function DashboardLayout({
   children,

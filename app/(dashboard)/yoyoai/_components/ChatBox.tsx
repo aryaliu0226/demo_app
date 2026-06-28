@@ -3,7 +3,7 @@
 
 import { useRef } from 'react'
 import { PaperAirplaneIcon, StopIcon } from '@heroicons/react/24/outline'
-import { PlusIcon } from '@/Icons/Icons.tsx'
+import { PlusIcon } from '@/Icon/Icons'
 
 type ChatBoxProps = {
   value: string

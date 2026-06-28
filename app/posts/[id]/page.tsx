@@ -1,15 +1,15 @@
 /** @format */
 
-import { prismaGetPostById } from '@/lib/dal/post'
-import { getOptionalUserId } from '@/lib/auth'
-import { prismaGetIsFollowing } from '@/lib/dal/follow'
+import { prismaGetPostById } from '@/app/_lib/dal/post'
+import { getOptionalUserId } from '@/app/_lib/auth'
+import { prismaGetIsFollowing } from '@/app/_lib/dal/follow'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import MediaCarousel from '@/ui/post/MediaCarousel'
-import FollowButton from '@/ui/FollowButton'
-import PostIcon from '@/ui/post/PostIcon'
-import Avatar from '@/ui/Avatar'
-import DeletePostButton from '@/ui/post/DeletePostButton'
+import MediaCarousel from '@/app/_components/post/MediaCarousel'
+import FollowButton from '@/app/_components/FollowButton'
+import PostIcon from '@/app/_components/post/PostIcon'
+import Avatar from '@/app/_components/Avatar'
+import DeletePostButton from '@/app/_components/post/DeletePostButton'
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat('zh-CN', {

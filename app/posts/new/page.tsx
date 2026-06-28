@@ -1,8 +1,8 @@
 /** @format */
 
-import { prismaGetCategories } from '@/lib/dal/post'
-import { verifyAuth } from '@/lib/auth'
-import NewPostForm from '@/ui/post/NewPostForm'
+import { prismaGetCategories } from '@/app/_lib/dal/post'
+import { verifyAuth } from '@/app/_lib/auth'
+import NewPostForm from '@/app/_components/post/NewPostForm'
 
 export default async function NewPostPage() {
   await verifyAuth()

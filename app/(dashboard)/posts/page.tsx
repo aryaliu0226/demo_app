@@ -1,8 +1,8 @@
 /** @format */
 
-import PostList from '@/ui/post/PostList'
-import PostCategoryTabs from '@/ui/post/PostCategoryTabs'
-import HeaderNav from '@/ui/header/HeaderNav'
+import PostList from '@/app/_components/post/PostList'
+import PostCategoryTabs from '@/app/_components/post/PostCategoryTabs'
+import HeaderNav from '@/app/_components/header/HeaderNav'
 
 export default function PostsPage() {
   return (
