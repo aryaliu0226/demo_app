@@ -15,6 +15,10 @@ import {
   prismaCreateUserChatMessageIfNeeded,
 } from '@/app/_lib/dal/chat'
 import { encodeText } from '@/app/_lib/text-codec'
+import {
+  isServerException,
+  SERVER_ERROR_MESSAGE,
+} from '@/app/_lib/prisma'
 
 const MAX_MESSAGES = 20
 const MAX_MESSAGE_LENGTH = 2000
@@ -103,7 +107,16 @@ export async function POST(req: NextRequest) {
 
   const { sessionId, messages } = parsed
   //会话隔离：校验sessionId是否属于此userId
-  const isSessionMappingUser = await prismaSessionIsolation(userId, sessionId)
+  let isSessionMappingUser: boolean
+  try {
+    isSessionMappingUser = await prismaSessionIsolation(userId, sessionId)
+  } catch (e) {
+    if (isServerException(e)) {
+      return Response.json({ error: SERVER_ERROR_MESSAGE }, { status: 500 })
+    }
+    throw e
+  }
+
   if (!isSessionMappingUser) {
     return Response.json({ error: '会话不存在' }, { status: 404 })
   }
@@ -116,10 +129,17 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: '请先输入消息' }, { status: 400 })
   }
 
-  await prismaCreateUserChatMessageIfNeeded({
-    sessionId,
-    content: latestUserMessage.content,
-  })
+  try {
+    await prismaCreateUserChatMessageIfNeeded({
+      sessionId,
+      content: latestUserMessage.content,
+    })
+  } catch (e) {
+    if (isServerException(e)) {
+      return Response.json({ error: SERVER_ERROR_MESSAGE }, { status: 500 })
+    }
+    throw e
+  }
 
   try {
     const deepseekUserId = encodeDeepseekUserId(userId)
@@ -180,12 +200,16 @@ export async function POST(req: NextRequest) {
           }
         } finally {
           if (assistantContent.trim()) {
-            await prismaCreateChatMessage({
-              sessionId,
-              role: 'assistant',
-              content: assistantContent,
-            })
-            revalidatePath('/yoyoai', 'layout')
+            try {
+              await prismaCreateChatMessage({
+                sessionId,
+                role: 'assistant',
+                content: assistantContent,
+              })
+              revalidatePath('/yoyoai', 'layout')
+            } catch (e) {
+              if (!isServerException(e)) throw e
+            }
           }
 
           controller.close()

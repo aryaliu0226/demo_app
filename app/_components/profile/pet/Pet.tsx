@@ -13,7 +13,14 @@ export default function Pet() {
   const [addOpen, setAddOpen] = useState(false)
 
   useEffect(() => {
-    fetchMyPetsAction().then(setPets)
+    fetchMyPetsAction().then(result => {
+      if (result.success) {
+        setPets(result.data)
+      } else {
+        console.error(result.error)
+        setPets([])
+      }
+    })
   }, [])
 
   function handleAddSuccess(pet: MyPet) {

@@ -1,6 +1,6 @@
 /** @format */
 
-import AuthForm from '@/app/_components/login/AuthForm'
+import AuthForm from '@/app/login/_components/AuthForm'
 import PhoneIcon from '@/Icon/PhoneIcon'
 import ChatIcon from '@/Icon/ChatIcon'
 

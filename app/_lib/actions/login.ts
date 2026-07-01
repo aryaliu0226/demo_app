@@ -3,11 +3,13 @@
 
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
+import type { Route } from 'next'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { setAuthCookie } from '@/app/_lib/auth'
 import { prismaFindUserByAccount } from '@/app/_lib/dal/user'
 import { prismaCreateUser } from '@/app/_lib/dal/login'
+import { serverActionMessage } from '@/app/_lib/actions/result'
 
 const loginSchema = z.object({
   account: z.string().min(1, '账号不能为空').max(32, '账号最多 32 位').trim(),
@@ -16,6 +18,8 @@ const loginSchema = z.object({
 
 export type LoginState = {
   error?: { account?: string; password?: string }
+  globalError?: string
+  globalErrorId?: number
 } | null
 
 export async function fetchLoginAction(
@@ -41,27 +45,38 @@ export async function fetchLoginAction(
   const { account, password } = parsed.data
 
   const referer = (await headers()).get('referer') ?? ''
-  const redirectTo = referer
-    ? (new URL(referer).searchParams.get('redirect') ?? '/posts')
-    : '/posts'
+  const redirectTo = (
+    referer
+      ? (new URL(referer).searchParams.get('redirect') ?? '/posts')
+      : '/posts'
+  ) as Route
 
-  const existingUser = await prismaFindUserByAccount(account)
+  let userId: string
 
-  if (existingUser) {
-    const isValid = await bcrypt.compare(password, existingUser.password)
-    if (!isValid) return { error: { password: '密码错误' } }
-    await setAuthCookie(existingUser.id)
-    redirect(redirectTo)
+  try {
+    const existingUser = await prismaFindUserByAccount(account)
+    if (existingUser) {
+      const isValid = await bcrypt.compare(password, existingUser.password)
+      if (!isValid) return { error: { password: '密码错误' } }
+      userId = existingUser.id
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10)
+      const newUser = await prismaCreateUser({
+        account,
+        nickname: account,
+        password: hashedPassword,
+        phone: '',
+        email: '',
+      })
+      userId = newUser.id
+    }
+  } catch (e) {
+    return {
+      globalError: serverActionMessage(e),
+      globalErrorId: Date.now(),
+    }
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10)
-  const newUser = await prismaCreateUser({
-    account,
-    nickname: account,
-    password: hashedPassword,
-    phone: '',
-    email: '',
-  })
-  await setAuthCookie(newUser.id)
+  await setAuthCookie(userId)
   redirect(redirectTo)
 }

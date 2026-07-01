@@ -5,6 +5,10 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { getOptionalUserId } from '@/app/_lib/auth'
 import { prismaCreateChatSessionWithMessage } from '@/app/_lib/dal/chat'
+import {
+  isServerException,
+  SERVER_ERROR_MESSAGE,
+} from '@/app/_lib/prisma'
 
 const bodySchema = z.object({
   message: z
@@ -36,11 +40,19 @@ export async function POST(req: NextRequest) {
   }
 
   const { message } = parsed.data
-  const data = await prismaCreateChatSessionWithMessage({
-    userId,
-    title: message.length > 30 ? `${message.slice(0, 30)}...` : message,
-    content: message,
-  })
+  let data: Awaited<ReturnType<typeof prismaCreateChatSessionWithMessage>>
+  try {
+    data = await prismaCreateChatSessionWithMessage({
+      userId,
+      title: message.length > 30 ? `${message.slice(0, 30)}...` : message,
+      content: message,
+    })
+  } catch (e) {
+    if (isServerException(e)) {
+      return Response.json({ error: SERVER_ERROR_MESSAGE }, { status: 500 })
+    }
+    throw e
+  }
 
   revalidatePath('/yoyoai', 'layout')
 

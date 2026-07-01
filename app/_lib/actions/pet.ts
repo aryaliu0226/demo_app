@@ -9,13 +9,28 @@ import {
   type PetCategory,
   type MyPet,
 } from '@/app/_lib/dal/pet'
+import {
+  type ActionResult,
+  serverActionError,
+  serverActionMessage,
+} from '@/app/_lib/actions/result'
 
-export async function fetchPetCategoriesAction(): Promise<PetCategory[]> {
-  return prismaGetPetCategories()
+export async function fetchPetCategoriesAction(): Promise<
+  ActionResult<PetCategory[]>
+> {
+  try {
+    return { success: true, data: await prismaGetPetCategories() }
+  } catch (e) {
+    return serverActionError(e)
+  }
 }
 
-export async function fetchMyPetsAction(): Promise<MyPet[]> {
-  return prismaGetMyPets()
+export async function fetchMyPetsAction(): Promise<ActionResult<MyPet[]>> {
+  try {
+    return { success: true, data: await prismaGetMyPets() }
+  } catch (e) {
+    return serverActionError(e)
+  }
 }
 
 const createPetSchema = z.object({
@@ -84,7 +99,6 @@ export async function createPetAction(
     const pet = await prismaCreatePet({ ...parsed.data, birthDate, age })
     return { pet }
   } catch (e) {
-    console.log('添加失败：', e)
-    return { error: '添加失败，请重试' }
+    return { error: serverActionMessage(e) }
   }
 }

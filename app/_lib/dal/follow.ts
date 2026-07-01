@@ -1,18 +1,20 @@
 /** @format */
 
-import prisma from '@/app/_lib/prisma'
+import prisma, { withPrismaException } from '@/app/_lib/prisma'
 
 /** 查询 followerId 是否已关注 targetId */
 export async function prismaGetIsFollowing(
   followerId: string,
   targetId: string,
 ): Promise<boolean> {
-  const user = await prisma.user.findUnique({
-    where: { id: followerId },
-    select: {
-      following: { where: { id: targetId }, select: { id: true } },
-    },
-  })
+  const user = await withPrismaException(() =>
+    prisma.user.findUnique({
+      where: { id: followerId },
+      select: {
+        following: { where: { id: targetId }, select: { id: true } },
+      },
+    }),
+  )
   return (user?.following.length ?? 0) > 0
 }
 
@@ -24,28 +26,38 @@ export async function prismaToggleFollow(
   const isFollowing = await prismaGetIsFollowing(followerId, targetId)
 
   if (isFollowing) {
-    await prisma.$transaction([
-      prisma.user.update({
-        where: { id: followerId },
-        data: { following: { disconnect: { id: targetId } }, followingCount: { decrement: 1 } },
-      }),
-      prisma.user.update({
-        where: { id: targetId },
-        data: { followerCount: { decrement: 1 } },
-      }),
-    ])
+    await withPrismaException(() =>
+      prisma.$transaction([
+        prisma.user.update({
+          where: { id: followerId },
+          data: {
+            following: { disconnect: { id: targetId } },
+            followingCount: { decrement: 1 },
+          },
+        }),
+        prisma.user.update({
+          where: { id: targetId },
+          data: { followerCount: { decrement: 1 } },
+        }),
+      ]),
+    )
     return { following: false }
   } else {
-    await prisma.$transaction([
-      prisma.user.update({
-        where: { id: followerId },
-        data: { following: { connect: { id: targetId } }, followingCount: { increment: 1 } },
-      }),
-      prisma.user.update({
-        where: { id: targetId },
-        data: { followerCount: { increment: 1 } },
-      }),
-    ])
+    await withPrismaException(() =>
+      prisma.$transaction([
+        prisma.user.update({
+          where: { id: followerId },
+          data: {
+            following: { connect: { id: targetId } },
+            followingCount: { increment: 1 },
+          },
+        }),
+        prisma.user.update({
+          where: { id: targetId },
+          data: { followerCount: { increment: 1 } },
+        }),
+      ]),
+    )
     return { following: true }
   }
 }

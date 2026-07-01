@@ -11,7 +11,14 @@ export default function ProfilePosts() {
   const [posts, setPosts] = useState<MyPost[] | null>(null)
 
   useEffect(() => {
-    fetchMyPostsAction().then(({ data }) => setPosts(data))
+    fetchMyPostsAction().then(result => {
+      if (result.success) {
+        setPosts(result.data.data)
+      } else {
+        console.error(result.error)
+        setPosts([])
+      }
+    })
   }, [])
 
   if (posts === null) {

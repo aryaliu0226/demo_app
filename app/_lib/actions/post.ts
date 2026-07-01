@@ -15,17 +15,32 @@ import {
   type Post,
   type PostQuery,
 } from '@/app/_lib/dal/post'
+import {
+  type ActionResult,
+  serverActionError,
+  serverActionMessage,
+} from '@/app/_lib/actions/result'
 
 export { type PostQuery }
 
-export async function fetchSearchSuggestionsAction(keywords: string): Promise<string[]> {
-  return prismaGetSearchSuggestions(keywords)
+export async function fetchSearchSuggestionsAction(
+  keywords: string,
+): Promise<ActionResult<string[]>> {
+  try {
+    return { success: true, data: await prismaGetSearchSuggestions(keywords) }
+  } catch (e) {
+    return serverActionError(e)
+  }
 }
 
 export async function fetchPostsAction(
   params: PostQuery,
-): Promise<{ data: Post[]; total: number }> {
-  return prismaGetPosts(params)
+): Promise<ActionResult<{ data: Post[]; total: number }>> {
+  try {
+    return { success: true, data: await prismaGetPosts(params) }
+  } catch (e) {
+    return serverActionError(e)
+  }
 }
 
 const createPostSchema = z.object({
@@ -62,14 +77,19 @@ export async function createPostAction(
     return { errors: parsed.error.flatten().fieldErrors }
   }
 
-  await prismaCreatePost(authorId, {
-    title: parsed.data.title,
-    content: parsed.data.bref,
-    categoryId: parsed.data.categoryId,
-    published: parsed.data.published,
-    pictures: parsed.data.pictures,
-    video: parsed.data.video,
-  })
+  try {
+    await prismaCreatePost(authorId, {
+      title: parsed.data.title,
+      content: parsed.data.bref,
+      categoryId: parsed.data.categoryId,
+      published: parsed.data.published,
+      pictures: parsed.data.pictures,
+      video: parsed.data.video,
+    })
+  } catch (e) {
+    return { message: serverActionMessage(e) }
+  }
+
   revalidatePath('/posts')
   redirect('/posts')
 }
@@ -81,7 +101,7 @@ export async function deletePostAction(
   try {
     await prismaDeletePost(postId, userId)
   } catch (e) {
-    return { error: e instanceof Error ? e.message : '删除失败，请重试' }
+    return { error: e instanceof Error ? e.message : serverActionMessage(e) }
   }
   revalidatePath('/posts')
   revalidatePath('/profile')
@@ -101,7 +121,7 @@ export async function togglePostLikeAction(
     revalidatePath('/profile')
     return result
   } catch (e) {
-    return { error: e instanceof Error ? e.message : '操作失败，请重试' }
+    return { error: e instanceof Error ? e.message : serverActionMessage(e) }
   }
 }
 
@@ -115,6 +135,6 @@ export async function togglePostFavoriteAction(
     revalidatePath('/profile')
     return result
   } catch (e) {
-    return { error: e instanceof Error ? e.message : '操作失败，请重试' }
+    return { error: e instanceof Error ? e.message : serverActionMessage(e) }
   }
 }

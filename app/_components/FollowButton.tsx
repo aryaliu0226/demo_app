@@ -24,6 +24,10 @@ export default function FollowButton({
         router.push(result.redirectUrl as Route)
         return
       }
+      if (result.error) {
+        console.error(result.error)
+        return
+      }
       setFollowing(result.following)
     })
   }

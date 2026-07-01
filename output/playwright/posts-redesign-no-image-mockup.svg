@@ -1,0 +1,337 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1180" viewBox="0 0 1440 1180">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8FAF0"/>
+      <stop offset="0.55" stop-color="#F3F8F4"/>
+      <stop offset="1" stop-color="#FFF8EF"/>
+    </linearGradient>
+    <pattern id="rule" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M0 35.5H36" stroke="#DDE5DC" stroke-width="1" opacity="0.55"/>
+      <path d="M35.5 0V36" stroke="#DDE5DC" stroke-width="1" opacity="0.35"/>
+    </pattern>
+    <filter id="shadowSoft3" x="-16%" y="-16%" width="132%" height="132%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#23322D" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1180" fill="url(#paper)"/>
+  <rect width="1440" height="1180" fill="url(#rule)" opacity="0.5"/>
+
+  <g id="sidebar">
+    <rect x="24" y="24" width="260" height="1132" rx="8" fill="#15231F"/>
+    <g transform="translate(54,58)">
+      <rect x="0" y="0" width="42" height="42" rx="8" fill="#F8FAF0"/>
+      <g transform="translate(21,22) scale(0.62)" opacity="1">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#F4B84A"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#F4B84A"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#F4B84A"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#F4B84A"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#F4B84A"/>
+  </g>
+      <text x="58" y="31" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="31" font-weight="900" fill="#F8FAF0">CongYo</text>
+    </g>
+    <g transform="translate(48,148)" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="16" font-weight="800">
+      <rect x="0" y="0" width="212" height="50" rx="8" fill="#F8FAF0"/>
+      <g transform="translate(25,24) scale(0.38)" opacity="1">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#F4B84A"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#F4B84A"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#F4B84A"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#F4B84A"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#F4B84A"/>
+  </g>
+      <text x="58" y="31" fill="#15231F">宠友圈</text>
+      <rect x="0" y="66" width="212" height="50" rx="8" fill="transparent" stroke="#40534B"/>
+      <circle cx="25" cy="91" r="12" fill="#7AB7AB"/>
+      <text x="58" y="97" fill="#C8D6D0">问问 YoYo</text>
+    </g>
+    <g transform="translate(48,944)">
+      <text x="0" y="0" font-family="SF Mono,Menlo,Consolas,monospace" font-size="12" font-weight="800" fill="#7AB7AB" letter-spacing="2">PROFILE</text>
+      <rect x="0" y="20" width="212" height="110" rx="8" fill="#20312B" stroke="#40534B"/>
+      <circle cx="38" cy="75" r="24" fill="#F4B84A"/>
+      <text x="38" y="83" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="18" font-weight="900" fill="#15231F">D</text>
+      <text x="76" y="70" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="15" font-weight="850" fill="#F8FAF0">dd</text>
+      <text x="76" y="92" font-family="SF Mono,Menlo,Consolas,monospace" font-size="12" fill="#AEBDB6">@demo_user</text>
+    </g>
+  </g>
+
+  <g id="main">
+    <g transform="translate(332,34)">
+      <text x="0" y="26" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="42" font-weight="900" fill="#15231F">宠友圈</text>
+      <text x="0" y="56" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="15" font-weight="650" fill="#6A766F">发现宠物日常、经验和附近活动</text>
+      <g transform="translate(360,4)">
+        <rect x="0" y="0" width="430" height="50" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+        <circle cx="26" cy="25" r="8" fill="none" stroke="#6A766F" stroke-width="2"/>
+        <path d="M32 31L40 39" stroke="#6A766F" stroke-width="2" stroke-linecap="round"/>
+        <text x="58" y="31" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="15" font-weight="600" fill="#87928B">搜索你感兴趣的动态、经验、伙伴</text>
+      </g>
+      <g transform="translate(824,4)">
+        <rect x="0" y="0" width="180" height="50" rx="8" fill="#F06D5E"/>
+        <text x="90" y="31" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="15" font-weight="850" fill="#FFFFFF">+ 发布</text>
+      </g>
+    </g>
+
+    <g transform="translate(332,118)" filter="url(#shadowSoft3)">
+      <rect x="0" y="0" width="1004" height="304" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+      <rect x="22" y="22" width="960" height="260" rx="8" fill="#F6FAF1" stroke="#D8E1DA"/>
+      <g transform="translate(62,56)">
+        <text x="0" y="0" font-family="SF Mono,Menlo,Consolas,monospace" font-size="12" font-weight="900" fill="#2F6F63" letter-spacing="2">PET SIGNAL BOARD</text>
+        <text x="0" y="58" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="58" font-weight="900" fill="#15231F">把每条动态</text>
+        <text x="0" y="116" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="58" font-weight="900" fill="#15231F">变成可扫读的宠物信号</text>
+        <text x="2" y="158" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="16" font-weight="650" fill="#6A766F">没有照片参考：用分类色、图标、标题首字和作者信息组成帖子封面。</text>
+      </g>
+      <g transform="translate(690,54)">
+        <circle cx="112" cy="112" r="96" fill="#E9F3ED" stroke="#D8E1DA" stroke-width="2"/>
+        <circle cx="112" cy="112" r="58" fill="#FFFFFF" stroke="#D8E1DA"/>
+        <path d="M112 112L184 66" stroke="#F06D5E" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="112" cy="112" r="12" fill="#F06D5E"/>
+        <g font-family="SF Mono,Menlo,Consolas,monospace" font-size="12" font-weight="900" fill="#15231F">
+          <rect x="-6" y="18" width="98" height="34" rx="8" fill="#CDEEE6"/><text x="43" y="40" text-anchor="middle">DOG</text>
+          <rect x="146" y="26" width="96" height="34" rx="8" fill="#FFE6D8"/><text x="194" y="48" text-anchor="middle">CAT</text>
+          <rect x="-20" y="170" width="118" height="34" rx="8" fill="#F9D96E"/><text x="39" y="192" text-anchor="middle">EVENT</text>
+          <rect x="140" y="176" width="122" height="34" rx="8" fill="#E7E3FA"/><text x="201" y="198" text-anchor="middle">CARE</text>
+        </g>
+        <g transform="translate(112,112) scale(0.72)" opacity="0.9">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#2F6F63"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#2F6F63"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#2F6F63"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#2F6F63"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#2F6F63"/>
+  </g>
+      </g>
+    </g>
+
+    <g transform="translate(332,448)" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="15" font-weight="850">
+      <rect x="0" y="0" width="1004" height="42" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+      <g transform="translate(8,7)"><rect x="0" y="0" width="74" height="28" rx="8" fill="#15231F"/><text x="37" y="19" text-anchor="middle" fill="#FFFFFF">全部</text></g>
+      <g fill="#5F6D65"><text x="112" y="26">猫咪</text><text x="184" y="26">狗狗</text><text x="256" y="26">领养</text><text x="328" y="26">经验</text><text x="400" y="26">活动</text></g>
+      <text x="886" y="26" font-family="SF Mono,Menlo,Consolas,monospace" font-size="12" fill="#87928B">CATEGORY TABS</text>
+    </g>
+
+    <g transform="translate(332,486)">
+    <rect x="0" y="0" width="316" height="326" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+    <rect x="0" y="0" width="316" height="154" rx="8" fill="#CDEEE6"/>
+    <clipPath id="cover_0"><rect x="0" y="0" width="316" height="154" rx="8"/></clipPath>
+    <g clip-path="url(#cover_0)">
+      <circle cx="290" cy="20" r="84" fill="#FFFFFF" opacity="0.25"/>
+      <circle cx="228" cy="124" r="54" fill="#FFFFFF" opacity="0.18"/>
+      <path d="M-12 132C46 84 96 152 160 106S270 84 334 118" fill="none" stroke="#FFFFFF" stroke-width="10" opacity="0.22"/>
+      <g transform="translate(270,112) scale(0.92)" opacity="0.78">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#2F6F63"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#2F6F63"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#2F6F63"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#2F6F63"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#2F6F63"/>
+  </g>
+      <g transform="translate(22,38)" fill="none" stroke="#2F6F63" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 40C17 24 31 12 50 12C69 12 83 24 83 40C83 60 68 74 50 74C32 74 17 60 17 40Z"/>
+    <path d="M22 24C8 20 8 42 20 42"/>
+    <path d="M78 24C92 20 92 42 80 42"/>
+    <path d="M42 44H42.5M58 44H58.5"/>
+    <path d="M50 50C46 50 45 55 50 57C55 55 54 50 50 50Z"/>
+  </g>
+      <text x="286" y="92" text-anchor="end" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="76" font-weight="900" fill="#2F6F63" opacity="0.82">奶</text>
+    </g>
+    <rect x="16" y="16" width="60" height="28" rx="8" fill="#F9FBF5" opacity="0.92"/>
+    <text x="32" y="35" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="800" fill="#1B2723">狗狗</text>
+    <g transform="translate(20,188)">
+      <text x="0" y="0" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="22" font-weight="850" fill="#16231F"><tspan x="0" dy="0">奶油第一次参加宠友晨跑</tspan></text>
+    </g>
+    <g transform="translate(20,278)">
+      <circle cx="16" cy="16" r="16" fill="#F0F5E8" stroke="#D8E1DA"/>
+      <text x="16" y="21" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="850" fill="#2F6F63">阿</text>
+      <text x="42" y="21" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="14" font-weight="700" fill="#5E6B62">阿柚</text>
+      <circle cx="252" cy="16" r="15" fill="#FFF2E6"/>
+      <path d="M246,13C246,8 253,7 256,12C259,7 266,8 266,13C266,21 256,26 256,26C256,26 246,21 246,13Z" fill="#F06D5E"/>
+      <text x="280" y="21" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" font-weight="800" fill="#5E6B62">128</text>
+    </g>
+  </g>
+<g transform="translate(676,486)">
+    <rect x="0" y="0" width="316" height="326" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+    <rect x="0" y="0" width="316" height="154" rx="8" fill="#FFE6D8"/>
+    <clipPath id="cover_1"><rect x="0" y="0" width="316" height="154" rx="8"/></clipPath>
+    <g clip-path="url(#cover_1)">
+      <circle cx="290" cy="20" r="84" fill="#FFFFFF" opacity="0.25"/>
+      <circle cx="228" cy="124" r="54" fill="#FFFFFF" opacity="0.18"/>
+      <path d="M-12 132C46 84 96 152 160 106S270 84 334 118" fill="none" stroke="#FFFFFF" stroke-width="10" opacity="0.22"/>
+      <g transform="translate(270,112) scale(0.92)" opacity="0.78">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#C75B43"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#C75B43"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#C75B43"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#C75B43"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#C75B43"/>
+  </g>
+      <g transform="translate(22,38)" fill="none" stroke="#C75B43" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 38C14 22 28 10 48 10C68 10 82 22 82 38C82 58 66 72 48 72C30 72 14 58 14 38Z"/>
+    <path d="M25 18L19 4L36 12"/>
+    <path d="M71 18L77 4L60 12"/>
+    <path d="M39 42H39.5M57 42H57.5"/>
+    <path d="M48 49V55M37 58H59"/>
+  </g>
+      <text x="286" y="92" text-anchor="end" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="76" font-weight="900" fill="#C75B43" opacity="0.82">幼</text>
+    </g>
+    <rect x="16" y="16" width="60" height="28" rx="8" fill="#F9FBF5" opacity="0.92"/>
+    <text x="32" y="35" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="800" fill="#1B2723">求助</text>
+    <g transform="translate(20,188)">
+      <text x="0" y="0" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="22" font-weight="850" fill="#16231F"><tspan x="0" dy="0">幼猫航空箱怎么选才稳</tspan></text>
+    </g>
+    <g transform="translate(20,278)">
+      <circle cx="16" cy="16" r="16" fill="#F0F5E8" stroke="#D8E1DA"/>
+      <text x="16" y="21" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="850" fill="#2F6F63">小</text>
+      <text x="42" y="21" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="14" font-weight="700" fill="#5E6B62">小满</text>
+      <circle cx="252" cy="16" r="15" fill="#FFF2E6"/>
+      <path d="M246,13C246,8 253,7 256,12C259,7 266,8 266,13C266,21 256,26 256,26C256,26 246,21 246,13Z" fill="#F06D5E"/>
+      <text x="280" y="21" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" font-weight="800" fill="#5E6B62">76</text>
+    </g>
+  </g>
+<g transform="translate(1020,486)">
+    <rect x="0" y="0" width="316" height="326" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+    <rect x="0" y="0" width="316" height="154" rx="8" fill="#F9D96E"/>
+    <clipPath id="cover_2"><rect x="0" y="0" width="316" height="154" rx="8"/></clipPath>
+    <g clip-path="url(#cover_2)">
+      <circle cx="290" cy="20" r="84" fill="#FFFFFF" opacity="0.25"/>
+      <circle cx="228" cy="124" r="54" fill="#FFFFFF" opacity="0.18"/>
+      <path d="M-12 132C46 84 96 152 160 106S270 84 334 118" fill="none" stroke="#FFFFFF" stroke-width="10" opacity="0.22"/>
+      <g transform="translate(270,112) scale(0.92)" opacity="0.78">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#584313"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#584313"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#584313"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#584313"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#584313"/>
+  </g>
+      <g transform="translate(22,38)" fill="none" stroke="#584313" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 40C17 24 31 12 50 12C69 12 83 24 83 40C83 60 68 74 50 74C32 74 17 60 17 40Z"/>
+    <path d="M22 24C8 20 8 42 20 42"/>
+    <path d="M78 24C92 20 92 42 80 42"/>
+    <path d="M42 44H42.5M58 44H58.5"/>
+    <path d="M50 50C46 50 45 55 50 57C55 55 54 50 50 50Z"/>
+  </g>
+      <text x="286" y="92" text-anchor="end" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="76" font-weight="900" fill="#584313" opacity="0.82">滨</text>
+    </g>
+    <rect x="16" y="16" width="60" height="28" rx="8" fill="#F9FBF5" opacity="0.92"/>
+    <text x="32" y="35" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="800" fill="#1B2723">活动</text>
+    <g transform="translate(20,188)">
+      <text x="0" y="0" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="22" font-weight="850" fill="#16231F"><tspan x="0" dy="0">滨江遛狗小队周末集合</tspan></text>
+    </g>
+    <g transform="translate(20,278)">
+      <circle cx="16" cy="16" r="16" fill="#F0F5E8" stroke="#D8E1DA"/>
+      <text x="16" y="21" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="850" fill="#2F6F63">L</text>
+      <text x="42" y="21" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="14" font-weight="700" fill="#5E6B62">Luna</text>
+      <circle cx="252" cy="16" r="15" fill="#FFF2E6"/>
+      <path d="M246,13C246,8 253,7 256,12C259,7 266,8 266,13C266,21 256,26 256,26C256,26 246,21 246,13Z" fill="#F06D5E"/>
+      <text x="280" y="21" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" font-weight="800" fill="#5E6B62">213</text>
+    </g>
+  </g>
+<g transform="translate(332,842)">
+    <rect x="0" y="0" width="316" height="326" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+    <rect x="0" y="0" width="316" height="154" rx="8" fill="#D9E7FF"/>
+    <clipPath id="cover_3"><rect x="0" y="0" width="316" height="154" rx="8"/></clipPath>
+    <g clip-path="url(#cover_3)">
+      <circle cx="290" cy="20" r="84" fill="#FFFFFF" opacity="0.25"/>
+      <circle cx="228" cy="124" r="54" fill="#FFFFFF" opacity="0.18"/>
+      <path d="M-12 132C46 84 96 152 160 106S270 84 334 118" fill="none" stroke="#FFFFFF" stroke-width="10" opacity="0.22"/>
+      <g transform="translate(270,112) scale(0.92)" opacity="0.78">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#305D8F"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#305D8F"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#305D8F"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#305D8F"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#305D8F"/>
+  </g>
+      <g transform="translate(22,38)" fill="none" stroke="#305D8F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 38C14 22 28 10 48 10C68 10 82 22 82 38C82 58 66 72 48 72C30 72 14 58 14 38Z"/>
+    <path d="M25 18L19 4L36 12"/>
+    <path d="M71 18L77 4L60 12"/>
+    <path d="M39 42H39.5M57 42H57.5"/>
+    <path d="M48 49V55M37 58H59"/>
+  </g>
+      <text x="286" y="92" text-anchor="end" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="76" font-weight="900" fill="#305D8F" opacity="0.82">领</text>
+    </g>
+    <rect x="16" y="16" width="60" height="28" rx="8" fill="#F9FBF5" opacity="0.92"/>
+    <text x="32" y="35" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="800" fill="#1B2723">日记</text>
+    <g transform="translate(20,188)">
+      <text x="0" y="0" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="22" font-weight="850" fill="#16231F"><tspan x="0" dy="0">领养小橘后的一周记录</tspan></text>
+    </g>
+    <g transform="translate(20,278)">
+      <circle cx="16" cy="16" r="16" fill="#F0F5E8" stroke="#D8E1DA"/>
+      <text x="16" y="21" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="850" fill="#2F6F63">图</text>
+      <text x="42" y="21" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="14" font-weight="700" fill="#5E6B62">图图</text>
+      <circle cx="252" cy="16" r="15" fill="#FFF2E6"/>
+      <path d="M246,13C246,8 253,7 256,12C259,7 266,8 266,13C266,21 256,26 256,26C256,26 246,21 246,13Z" fill="#F06D5E"/>
+      <text x="280" y="21" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" font-weight="800" fill="#5E6B62">98</text>
+    </g>
+  </g>
+<g transform="translate(676,842)">
+    <rect x="0" y="0" width="316" height="326" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+    <rect x="0" y="0" width="316" height="154" rx="8" fill="#E7E3FA"/>
+    <clipPath id="cover_4"><rect x="0" y="0" width="316" height="154" rx="8"/></clipPath>
+    <g clip-path="url(#cover_4)">
+      <circle cx="290" cy="20" r="84" fill="#FFFFFF" opacity="0.25"/>
+      <circle cx="228" cy="124" r="54" fill="#FFFFFF" opacity="0.18"/>
+      <path d="M-12 132C46 84 96 152 160 106S270 84 334 118" fill="none" stroke="#FFFFFF" stroke-width="10" opacity="0.22"/>
+      <g transform="translate(270,112) scale(0.92)" opacity="0.78">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#65579D"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#65579D"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#65579D"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#65579D"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#65579D"/>
+  </g>
+      <g transform="translate(22,38)" fill="none" stroke="#65579D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 42H82L75 68H25L18 42Z"/>
+    <path d="M29 34C32 23 43 17 54 19C65 21 73 27 74 38"/>
+    <path d="M39 53H61"/>
+  </g>
+      <text x="286" y="92" text-anchor="end" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="76" font-weight="900" fill="#65579D" opacity="0.82">换</text>
+    </g>
+    <rect x="16" y="16" width="60" height="28" rx="8" fill="#F9FBF5" opacity="0.92"/>
+    <text x="32" y="35" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="800" fill="#1B2723">经验</text>
+    <g transform="translate(20,188)">
+      <text x="0" y="0" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="22" font-weight="850" fill="#16231F"><tspan x="0" dy="0">换季掉毛怎么处理更省心</tspan></text>
+    </g>
+    <g transform="translate(20,278)">
+      <circle cx="16" cy="16" r="16" fill="#F0F5E8" stroke="#D8E1DA"/>
+      <text x="16" y="21" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="850" fill="#2F6F63">豆</text>
+      <text x="42" y="21" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="14" font-weight="700" fill="#5E6B62">豆包家</text>
+      <circle cx="252" cy="16" r="15" fill="#FFF2E6"/>
+      <path d="M246,13C246,8 253,7 256,12C259,7 266,8 266,13C266,21 256,26 256,26C256,26 246,21 246,13Z" fill="#F06D5E"/>
+      <text x="280" y="21" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" font-weight="800" fill="#5E6B62">54</text>
+    </g>
+  </g>
+<g transform="translate(1020,842)">
+    <rect x="0" y="0" width="316" height="326" rx="8" fill="#FFFFFF" stroke="#D8E1DA"/>
+    <rect x="0" y="0" width="316" height="154" rx="8" fill="#DFF0CA"/>
+    <clipPath id="cover_5"><rect x="0" y="0" width="316" height="154" rx="8"/></clipPath>
+    <g clip-path="url(#cover_5)">
+      <circle cx="290" cy="20" r="84" fill="#FFFFFF" opacity="0.25"/>
+      <circle cx="228" cy="124" r="54" fill="#FFFFFF" opacity="0.18"/>
+      <path d="M-12 132C46 84 96 152 160 106S270 84 334 118" fill="none" stroke="#FFFFFF" stroke-width="10" opacity="0.22"/>
+      <g transform="translate(270,112) scale(0.92)" opacity="0.78">
+    <ellipse cx="0" cy="9" rx="9" ry="8" fill="#4E7D35"/>
+    <circle cx="-12" cy="-3" r="5.5" fill="#4E7D35"/>
+    <circle cx="-3" cy="-9" r="5.2" fill="#4E7D35"/>
+    <circle cx="7" cy="-8" r="5.1" fill="#4E7D35"/>
+    <circle cx="15" cy="-1" r="4.9" fill="#4E7D35"/>
+  </g>
+      <g transform="translate(22,38)" fill="none" stroke="#4E7D35" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 40C17 24 31 12 50 12C69 12 83 24 83 40C83 60 68 74 50 74C32 74 17 60 17 40Z"/>
+    <path d="M22 24C8 20 8 42 20 42"/>
+    <path d="M78 24C92 20 92 42 80 42"/>
+    <path d="M42 44H42.5M58 44H58.5"/>
+    <path d="M50 50C46 50 45 55 50 57C55 55 54 50 50 50Z"/>
+  </g>
+      <text x="286" y="92" text-anchor="end" font-family="Arial Black,PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="76" font-weight="900" fill="#4E7D35" opacity="0.82">布</text>
+    </g>
+    <rect x="16" y="16" width="60" height="28" rx="8" fill="#F9FBF5" opacity="0.92"/>
+    <text x="32" y="35" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="800" fill="#1B2723">瞬间</text>
+    <g transform="translate(20,188)">
+      <text x="0" y="0" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="22" font-weight="850" fill="#16231F"><tspan x="0" dy="0">布丁今天学会等电梯</tspan></text>
+    </g>
+    <g transform="translate(20,278)">
+      <circle cx="16" cy="16" r="16" fill="#F0F5E8" stroke="#D8E1DA"/>
+      <text x="16" y="21" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="13" font-weight="850" fill="#2F6F63">M</text>
+      <text x="42" y="21" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Arial,sans-serif" font-size="14" font-weight="700" fill="#5E6B62">Morning</text>
+      <circle cx="252" cy="16" r="15" fill="#FFF2E6"/>
+      <path d="M246,13C246,8 253,7 256,12C259,7 266,8 266,13C266,21 256,26 256,26C256,26 246,21 246,13Z" fill="#F06D5E"/>
+      <text x="280" y="21" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" font-weight="800" fill="#5E6B62">169</text>
+    </g>
+  </g>
+  </g>
+</svg>

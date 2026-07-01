@@ -17,7 +17,13 @@ export default function PostCategoryTabs() {
   const activeId = searchParams.get('categoryId') ?? ''
 
   useEffect(() => {
-    fetchPetCategoriesAction().then(setCategories)
+    fetchPetCategoriesAction().then(result => {
+      if (result.success) {
+        setCategories(result.data)
+      } else {
+        console.error(result.error)
+      }
+    })
   }, [])
 
   const handleSelect = (id: string) => {

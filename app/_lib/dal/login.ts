@@ -1,6 +1,6 @@
 /** @format */
 
-import prisma from '../prisma'
+import prisma, { withPrismaException } from '../prisma'
 
 // 创建新用户（注册用）
 export async function prismaCreateUser(data: {
@@ -10,8 +10,10 @@ export async function prismaCreateUser(data: {
   phone: string
   email: string
 }) {
-  return prisma.user.create({
-    data,
-    select: { id: true },
-  })
+  return withPrismaException(() =>
+    prisma.user.create({
+      data,
+      select: { id: true },
+    }),
+  )
 }

@@ -13,6 +13,11 @@ import {
   type MyPost,
   type LikedPost,
 } from '@/app/_lib/dal/profile'
+import {
+  type ActionResult,
+  serverActionError,
+  serverActionMessage,
+} from '@/app/_lib/actions/result'
 
 const updateProfileSchema = z.object({
   nickname: z.string().max(20, '昵称最多 20 字').optional(),
@@ -50,25 +55,41 @@ export async function updateProfileAction(
 
   try {
     await prismaUpdateUserProfile(userId, updateData)
-  } catch {
-    return { error: '保存失败，请重试' }
+  } catch (e) {
+    return { error: serverActionMessage(e) }
   }
 
   revalidatePath('/profile')
   return { success: true }
 }
 
-export async function fetchMyPostsAction(): Promise<{
-  data: MyPost[]
-  total: number
-}> {
-  return prismaGetMyPosts({ pageNo: 1, pageSize: 100 })
+export async function fetchMyPostsAction(): Promise<
+  ActionResult<{ data: MyPost[]; total: number }>
+> {
+  try {
+    return {
+      success: true,
+      data: await prismaGetMyPosts({ pageNo: 1, pageSize: 100 }),
+    }
+  } catch (e) {
+    return serverActionError(e)
+  }
 }
 
-export async function fetchMyLikedPostsAction(): Promise<LikedPost[]> {
-  return prismaGetMyLikedPosts()
+export async function fetchMyLikedPostsAction(): Promise<ActionResult<LikedPost[]>> {
+  try {
+    return { success: true, data: await prismaGetMyLikedPosts() }
+  } catch (e) {
+    return serverActionError(e)
+  }
 }
 
-export async function fetchMyFavoritePostsAction(): Promise<FavoritePost[]> {
-  return prismaGetMyFavoritePosts()
+export async function fetchMyFavoritePostsAction(): Promise<
+  ActionResult<FavoritePost[]>
+> {
+  try {
+    return { success: true, data: await prismaGetMyFavoritePosts() }
+  } catch (e) {
+    return serverActionError(e)
+  }
 }

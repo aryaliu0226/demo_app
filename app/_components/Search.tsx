@@ -38,9 +38,16 @@ export default function Search({ placeholder }: { placeholder: string }) {
       setOpen(false)
       return
     }
-    const results = await fetchSearchSuggestionsAction(term)
-    setSuggestions(results)
-    setOpen(results.length > 0)
+    const result = await fetchSearchSuggestionsAction(term)
+    if (!result.success) {
+      console.error(result.error)
+      setSuggestions([])
+      setOpen(false)
+      return
+    }
+
+    setSuggestions(result.data)
+    setOpen(result.data.length > 0)
   }, 200)
 
   const commitSearch = (term: string) => {

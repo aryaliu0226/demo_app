@@ -35,12 +35,20 @@ export default function PostList() {
     if (loading || !hasMore) return
     setLoading(true)
     const nextPage = pageRef.current + 1
-    const { data, total } = await fetchPostsAction({
+    const result = await fetchPostsAction({
       pageNo: nextPage,
       pageSize: PAGE_SIZE,
       keywords,
       categoryId,
     })
+    if (!result.success) {
+      console.error(result.error)
+      setHasMore(false)
+      setLoading(false)
+      return
+    }
+
+    const { data, total } = result.data
     pageRef.current = nextPage
     setPosts(prev => {
       const seen = new Set(prev.map(p => p.id))

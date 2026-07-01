@@ -11,7 +11,14 @@ export default function Favorite() {
   const [items, setItems] = useState<FavoritePost[] | null>(null)
 
   useEffect(() => {
-    fetchMyFavoritePostsAction().then(setItems)
+    fetchMyFavoritePostsAction().then(result => {
+      if (result.success) {
+        setItems(result.data)
+      } else {
+        console.error(result.error)
+        setItems([])
+      }
+    })
   }, [])
 
   if (items === null) {

@@ -1,21 +1,7 @@
 /** @format */
 
 import { Prisma } from '@/generated/prisma/client'
-import prisma from '@/app/_lib/prisma'
-
-export type ChatSessionListItem = {
-  id: string
-  title: string
-  createdAt: Date
-  updatedAt: Date
-  messageCount: number
-  latestMessage: {
-    id: string
-    role: string
-    content: string
-    createdAt: Date
-  } | null
-}
+import prisma, { withPrismaException } from '@/app/_lib/prisma'
 
 export type CreatedChatSession = {
   id: string
@@ -24,11 +10,21 @@ export type CreatedChatSession = {
   updatedAt: Date
 }
 
-export type ChatMessageRole = 'user' | 'assistant'
-
-export type ChatDisplayMessage = {
-  role: ChatMessageRole
-  content: string
+export async function prismaCreateChatSession(
+  userId: string,
+  title?: string,
+): Promise<CreatedChatSession> {
+  return withPrismaException(() =>
+    prisma.chatSession.create({
+      data: { userId, ...(title && { title }) },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+  )
 }
 
 export type CreatedChatMessage = {
@@ -44,164 +40,173 @@ export type CreatedChatSessionWithMessage = {
   message: CreatedChatMessage
 }
 
-//
-export async function prismaCreateChatSession(
-  userId: string,
-  title?: string,
-): Promise<CreatedChatSession> {
-  return prisma.chatSession.create({
-    data: { userId, ...(title && { title }) },
-    select: {
-      id: true,
-      title: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  })
-}
-
 export async function prismaCreateChatSessionWithMessage(params: {
   userId: string
   title: string
   content: string
 }): Promise<CreatedChatSessionWithMessage> {
-  return prisma.$transaction(async tx => {
-    const session = await tx.chatSession.create({
-      data: { userId: params.userId, title: params.title },
-      select: {
-        id: true,
-        title: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    })
+  return withPrismaException(() =>
+    prisma.$transaction(async tx => {
+      const session = await tx.chatSession.create({
+        data: { userId: params.userId, title: params.title },
+        select: {
+          id: true,
+          title: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      })
 
-    const message = await tx.chatMessage.create({
-      data: {
-        sessionId: session.id,
-        role: 'user',
-        content: params.content,
-      },
-      select: {
-        id: true,
-        role: true,
-        content: true,
-        sessionId: true,
-        createdAt: true,
-      },
-    })
+      const message = await tx.chatMessage.create({
+        data: {
+          sessionId: session.id,
+          role: 'user',
+          content: params.content,
+        },
+        select: {
+          id: true,
+          role: true,
+          content: true,
+          sessionId: true,
+          createdAt: true,
+        },
+      })
 
-    return { session, message }
-  })
+      return { session, message }
+    }),
+  )
 }
+
+export type ChatMessageRole = 'user' | 'assistant'
 
 export async function prismaCreateChatMessage(params: {
   sessionId: string
   role: ChatMessageRole
   content: string
 }): Promise<CreatedChatMessage> {
-  return prisma.$transaction(async tx => {
-    const message = await tx.chatMessage.create({
-      data: params,
-      select: {
-        id: true,
-        role: true,
-        content: true,
-        sessionId: true,
-        createdAt: true,
-      },
-    })
+  return withPrismaException(() =>
+    prisma.$transaction(async tx => {
+      const message = await tx.chatMessage.create({
+        data: params,
+        select: {
+          id: true,
+          role: true,
+          content: true,
+          sessionId: true,
+          createdAt: true,
+        },
+      })
 
-    await tx.chatSession.update({
-      where: { id: params.sessionId },
-      data: { updatedAt: new Date() },
-      select: { id: true },
-    })
+      await tx.chatSession.update({
+        where: { id: params.sessionId },
+        data: { updatedAt: new Date() },
+        select: { id: true },
+      })
 
-    return message
-  })
+      return message
+    }),
+  )
 }
 
 export async function prismaSessionIsolation(
   userId: string,
   sessionId: string,
 ): Promise<boolean> {
-  const session = await prisma.chatSession.findFirst({
-    where: { id: sessionId, userId },
-    select: { id: true },
-  })
+  const session = await withPrismaException(() =>
+    prisma.chatSession.findFirst({
+      where: { id: sessionId, userId },
+      select: { id: true },
+    }),
+  )
 
   return Boolean(session)
 }
 
-//
 export async function prismaCreateUserChatMessageIfNeeded(params: {
   sessionId: string
   content: string
 }): Promise<CreatedChatMessage | null> {
-  return prisma.$transaction(async tx => {
-    const latest = await tx.chatMessage.findFirst({
-      where: { sessionId: params.sessionId },
-      orderBy: { createdAt: Prisma.SortOrder.desc },
-      select: {
-        role: true,
-        content: true,
-      },
-    })
+  return withPrismaException(() =>
+    prisma.$transaction(async tx => {
+      const latest = await tx.chatMessage.findFirst({
+        where: { sessionId: params.sessionId },
+        orderBy: { createdAt: Prisma.SortOrder.desc },
+        select: {
+          role: true,
+          content: true,
+        },
+      })
 
-    if (latest?.role === 'user' && latest.content === params.content) {
-      return null
-    }
+      if (latest?.role === 'user' && latest.content === params.content) {
+        return null
+      }
 
-    const message = await tx.chatMessage.create({
-      data: {
-        sessionId: params.sessionId,
-        role: 'user',
-        content: params.content,
-      },
-      select: {
-        id: true,
-        role: true,
-        content: true,
-        sessionId: true,
-        createdAt: true,
-      },
-    })
+      const message = await tx.chatMessage.create({
+        data: {
+          sessionId: params.sessionId,
+          role: 'user',
+          content: params.content,
+        },
+        select: {
+          id: true,
+          role: true,
+          content: true,
+          sessionId: true,
+          createdAt: true,
+        },
+      })
 
-    await tx.chatSession.update({
-      where: { id: params.sessionId },
-      data: { updatedAt: new Date() },
-      select: { id: true },
-    })
+      await tx.chatSession.update({
+        where: { id: params.sessionId },
+        data: { updatedAt: new Date() },
+        select: { id: true },
+      })
 
-    return message
-  })
+      return message
+    }),
+  )
+}
+
+export type ChatSessionListItem = {
+  id: string
+  title: string
+  createdAt: Date
+  updatedAt: Date
+  messageCount: number
+  latestMessage: {
+    id: string
+    role: string
+    content: string
+    createdAt: Date
+  } | null
 }
 
 export async function prismaGetChatSessionsByUser(
   userId: string,
 ): Promise<ChatSessionListItem[]> {
-  const sessions = await prisma.chatSession.findMany({
-    where: { userId },
-    orderBy: { updatedAt: Prisma.SortOrder.desc },
-    select: {
-      id: true,
-      title: true,
-      createdAt: true,
-      updatedAt: true,
-      _count: { select: { messages: true } },
-      messages: {
-        orderBy: { createdAt: Prisma.SortOrder.desc },
-        take: 1,
-        select: {
-          id: true,
-          role: true,
-          content: true,
-          createdAt: true,
+  const sessions = await withPrismaException(() =>
+    prisma.chatSession.findMany({
+      where: { userId },
+      orderBy: { updatedAt: Prisma.SortOrder.desc },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: { select: { messages: true } },
+        messages: {
+          orderBy: { createdAt: Prisma.SortOrder.desc },
+          take: 1,
+          select: {
+            id: true,
+            role: true,
+            content: true,
+            createdAt: true,
+          },
         },
       },
-    },
-  })
+    }),
+  )
 
   return sessions.map(session => ({
     id: session.id,
@@ -217,9 +222,11 @@ export async function prismaDeleteChatSession(
   userId: string,
   sessionId: string,
 ): Promise<boolean> {
-  const result = await prisma.chatSession.deleteMany({
-    where: { id: sessionId, userId },
-  })
+  const result = await withPrismaException(() =>
+    prisma.chatSession.deleteMany({
+      where: { id: sessionId, userId },
+    }),
+  )
 
   return result.count > 0
 }
@@ -228,22 +235,29 @@ function isChatMessageRole(role: string): role is ChatMessageRole {
   return role === 'user' || role === 'assistant'
 }
 
+export type ChatDisplayMessage = {
+  role: ChatMessageRole
+  content: string
+}
+
 export async function prismaGetChatSessionMessages(
   userId: string,
   sessionId: string,
 ): Promise<ChatDisplayMessage[] | null> {
-  const session = await prisma.chatSession.findFirst({
-    where: { id: sessionId, userId },
-    select: {
-      messages: {
-        orderBy: { createdAt: Prisma.SortOrder.asc },
-        select: {
-          role: true,
-          content: true,
+  const session = await withPrismaException(() =>
+    prisma.chatSession.findFirst({
+      where: { id: sessionId, userId },
+      select: {
+        messages: {
+          orderBy: { createdAt: Prisma.SortOrder.asc },
+          select: {
+            role: true,
+            content: true,
+          },
         },
       },
-    },
-  })
+    }),
+  )
 
   if (!session) return null
 

@@ -3,6 +3,7 @@
 
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import type { Route } from 'next'
 import { SignJWT, jwtVerify } from 'jose'
 import { encodeText } from '@/app/_lib/text-codec'
 
@@ -41,12 +42,12 @@ export async function clearAuthCookie() {
 
 // ─── 构造带 redirect 参数的登录 URL ──────────────────────────────────────────
 // proxy.ts 会在每个请求的响应头里写入 x-current-path，这里直接读取。
-export async function buildLoginRedirectUrl(): Promise<string> {
+export async function buildLoginRedirectUrl(): Promise<Route> {
   const headersList = await headers()
   const pathname = headersList.get('x-current-path')
   // 已在登录页或无路径信息时，直接跳 /login
   if (!pathname || pathname === '/login') return '/login'
-  return `/login?redirect=${encodeURIComponent(pathname)}`
+  return `/login?redirect=${encodeURIComponent(pathname)}` as Route
 }
 
 // ─── 软鉴权：有 token 且有效则返回 userId，否则返回 null（不跳转）────────────

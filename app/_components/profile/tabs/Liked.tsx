@@ -11,7 +11,14 @@ export default function Liked() {
   const [items, setItems] = useState<LikedPost[] | null>(null)
 
   useEffect(() => {
-    fetchMyLikedPostsAction().then(setItems)
+    fetchMyLikedPostsAction().then(result => {
+      if (result.success) {
+        setItems(result.data)
+      } else {
+        console.error(result.error)
+        setItems([])
+      }
+    })
   }, [])
 
   if (items === null) {
